@@ -1,4 +1,6 @@
-# bugs
+# game
+
+## bugs
 
 if the player is holding the jump button, when tney fall off the map they appear below the tiles near the starting place.
 
@@ -14,7 +16,21 @@ the player is able to get stuck on the side of blocks where they are then able t
 
 the player can hold down the jump button to continuously jump (which could be a feature but should be able to be controlled)
 
-# features
+## tasks
+
+make collisions happen without colliding blocks
+
+build an upgraded in container checker
+
+hit box visualization tools
+
+delay on death
+
+death at bottom of screen
+
+code comments
+
+## features
 
 toggling pause with a key (esc, e?)
 
@@ -35,19 +51,3 @@ delay on death/death screen
 music
 
 coins
-
-# tasks
-
-make collisions happen without colliding blocks
-
-build an upgraded in container checker
-
-hit box visualization tools
-
-delay on death
-
-death at bottom of screen
-
-code comments
-
-fix collision detection
