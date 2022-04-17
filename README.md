@@ -2,7 +2,7 @@
 
 ## bugs
 
-if the player is holding the jump button, when tney fall off the map they appear below the tiles near the starting place.
+if the player is holding the jump button, when they fall off the map they appear below the tiles near the starting place.
 
 When walking up against a block, the player will get stuck until they jump
 
