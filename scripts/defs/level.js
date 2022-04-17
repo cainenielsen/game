@@ -1,5 +1,6 @@
-class Level {
+class Level extends Index {
     constructor(name = 'level') {
+        super();
         this.canvas = document.createElement('canvas');
         this.canvas.id = name;
         this.context = this.canvas.getContext("2d");

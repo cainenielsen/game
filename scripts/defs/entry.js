@@ -1,10 +1,10 @@
-class Entry {
+class Entry extends Index {
     #position = {
         topY: 0,
         leftX: 0,
     }
     constructor({ height = 1, width = 1, setPosition: { x = 0, y = 0, useGrid = false }, background }) {
-        this.id = uuid.v4();
+        super();
         this.background = background;
         this.dimensions = {
             height: height * level1.config.gridSize,
