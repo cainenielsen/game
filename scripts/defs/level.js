@@ -11,7 +11,7 @@ class Level extends Index {
             gridSize: Math.floor(window.innerHeight / 16),
             canvasWidth: 128,
             canvasHeight: 32,
-            gridDisplay: true
+            gridDisplay: false
         }
         this.config.startingPosition = { x: 2 * this.config.gridSize, y: 17 * this.config.gridSize };
         this.renderEvent = new Event('render');

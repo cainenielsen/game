@@ -48,30 +48,36 @@ class Player extends Character {
         level1.canvas.style.top = `${clampedDistanceFromTop}px`
     };
     movePlayer() {
-        this.move({ x: this.friction });
-        if (this.collisionsLeftOfPlayer.length > 0) {
-            this.setPosition({ x: this.collisionsLeftOfPlayer[0].bounding.rightX });
+        const isLeftCollided = this.leftCollisions.length > 0;
+        const isRightCollided = this.rightCollisions.length > 0;
+
+        if (isLeftCollided) {
+            this.velocity.horizontal = 0;
+            this.setPosition({ x: this.leftCollisions[0].tile.bounding.rightX });
         }
-        if (this.collisionsRightOfPlayer.length > 0) {
-            this.setPosition({ x: this.collisionsRightOfPlayer[0].bounding.leftX - this.dimensions.width });
+
+        if (isRightCollided) {
+            this.velocity.horizontal = 0;
+            this.setPosition({ x: this.rightCollisions[0].tile.bounding.leftX - this.dimensions.width });
         }
 
         if (Math.abs(this.velocity.horizontal) < this.maxSpeed) {
             if (this.movement.left) {
                 if (this.bounding.leftX > 0) {
-                    if (this.collisionsLeftOfPlayer.length === 0) {
+                    if (!isLeftCollided) {
                         this.velocity.horizontal--;
                     }
                 }
             }
             if (this.movement.right) {
                 if (this.bounding.rightX < level1.canvas.width) {
-                    if (this.collisionsRightOfPlayer.length === 0) {
+                    if (!isRightCollided) {
                         this.velocity.horizontal++;
                     }
                 }
             }
         }
+        this.move({ x: this.friction });
     }
     handleJump() {
         if (this.movement.jump && this.jumping === false) {
