@@ -30,6 +30,8 @@ death at bottom of screen
 
 code comments
 
+balance out player movement
+
 ## features
 
 toggling pause with a key (esc, e?)
