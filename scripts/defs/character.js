@@ -14,7 +14,7 @@ class Character extends Entry {
         return this.velocity.vertical * 0.10;
     }
     get friction() {
-        return this.velocity.horizontal * 0.10;
+        return this.velocity.horizontal * 0.20;
     }
     get leftCollisions() {
         return this.collisions.filter((collision) => collision.side === 'left' && collision.tile.bounding.topY < this.bounding.bottomY);
@@ -28,51 +28,62 @@ class Character extends Entry {
     get bottomCollisions() {
         return this.collisions.filter((collision) => collision.side === 'bottom');
     }
+    get isOnTile() {
+        return this.bottomCollisions.length > 0;
+    }
+    get isUnderTile() {
+        return this.topCollisions.length > 0;
+    }
+    get isInCanvas() {
+        return this.bounding.bottomY < level1.canvas.height;
+    }
+    get isLeftCollided() {
+        return this.leftCollisions.length > 0;
+    }
+    get isRightCollided() {
+        return this.rightCollisions.length > 0;
+    }
     init() {
         document.addEventListener('render', (e) => {
             this.handleStageLimits(e);
-            this.playerTileCollision(e);
+            this.gatherCollisions(e);
+            this.enforceCollisions(e);
             this.handleGravity(e);
             this.handleVelocityEntropy(e);
             this.highlightCollisions(e);
         }, false);
     }
     handleGravity() {
-        const fall = () => {
+        if (!this.isOnTile && this.isInCanvas) {
             this.velocity.vertical++;
-        };
-
-        const land = (yPosition) => {
+        }
+        this.move({ y: this.gravity });
+    }
+    enforceCollisions() {
+        if (this.isOnTile) {
             if (this.velocity.vertical > 0) {
                 this.velocity.vertical = 0;
-                this.setPosition({ y: yPosition - this.dimensions.height });
+                this.setPosition({ y: this.bottomCollisions[0].tile.bounding.topY - this.dimensions.height });
                 this.jumping = false;
             }
-        };
+        }
 
-        const isUnderTile = this.topCollisions.length > 0;
-
-        if (isUnderTile) {
+        if (this.isUnderTile) {
             this.velocity.vertical = 0;
             this.setPosition({ y: this.topCollisions[0].tile.bounding.bottomY });
         }
 
-        const isOnTile = this.bottomCollisions.length > 0;
-        const isInCanvas = this.bounding.bottomY < level1.canvas.height;
-
-        if (isOnTile) {
-            land(this.bottomCollisions[0].tile.bounding.topY);
-        } else {
-            if (isInCanvas) {
-                fall();
-            } else {
-                this.setPosition({ x: level1.config.startingPosition.x, y: level1.config.startingPosition.y });
-                land(level1.canvas.height);
-            }
+        if (this.isLeftCollided) {
+            this.velocity.horizontal = 0;
+            this.setPosition({ x: this.leftCollisions[0].tile.bounding.rightX });
         }
-        this.move({ y: this.gravity });
+
+        if (this.isRightCollided) {
+            this.velocity.horizontal = 0;
+            this.setPosition({ x: this.rightCollisions[0].tile.bounding.leftX - this.dimensions.width });
+        }
     }
-    playerTileCollision() {
+    gatherCollisions() {
         level1.entries.forEach((tile) => {
             const collide = detectCollision2(tile, this)
             if (collide !== 'none') {
@@ -85,43 +96,37 @@ class Character extends Entry {
         });
     };
     handleStageLimits() {
-        if (this.bounding.leftX >= 0) {
-            if (this.bounding.leftX <= level1.canvas.width - this.dimensions.width) {
-                this.bounding.leftX = this.bounding.leftX + this.friction;
-            } else {
-                this.bounding.leftX = level1.canvas.width - this.dimensions.width;
+        if (!detectContaining(this, level1)) {
+            if(this.bounding.leftX < level1.bounding.leftX) {
+                this.velocity.horizontal = 0;
+                this.setPosition({ x: level1.bounding.leftX });
             }
-        } else {
-            this.setPosition({ x: 0 });
+            if (this.bounding.rightX > level1.bounding.rightX) {
+                this.velocity.horizontal = 0;
+                this.setPosition({ x: level1.bounding.rightX - this.dimensions.width });
+            }
+            if (this.bounding.topY < level1.bounding.topY) {
+                this.velocity.vertical = 0;
+                this.setPosition({ y: level1.bounding.topY });
+            }
+            if (this.bounding.bottomY > level1.bounding.bottomY) {
+                this.velocity.vertical = 0;
+                this.velocity.horizontal = 0;
+                this.setPosition({ x: level1.config.startingPosition.x, y: level1.config.startingPosition.y });
+            }
         }
     };
     handleVelocityEntropy() {
-        if (Math.abs(this.velocity.horizontal) >= 0.1) {
-            this.velocity.horizontal = this.velocity.horizontal * 0.98;
+        if (Math.abs(this.velocity.horizontal) >= 0.5) {
+            this.velocity.horizontal = this.velocity.horizontal * 0.95;
         } else {
             this.velocity.horizontal = 0;
         }
     };
     highlightCollisions() {
-        console.log(this.collisions);
-        this.leftCollisions.forEach((col) => {
+        this.collisions.forEach((col) => {
             const collidedTile = level1.entries.find((tile) => tile.id === col.tile.id);
-            level1.context.fillStyle = 'red';
-            level1.context.fillRect(collidedTile.bounding.leftX, collidedTile.bounding.topY, collidedTile.dimensions.height, collidedTile.dimensions.width);
-        });
-        this.rightCollisions.forEach((col) => {
-            const collidedTile = level1.entries.find((tile) => tile.id === col.tile.id);
-            level1.context.fillStyle = 'blue';
-            level1.context.fillRect(collidedTile.bounding.leftX, collidedTile.bounding.topY, collidedTile.dimensions.height, collidedTile.dimensions.width);
-        });
-        this.topCollisions.forEach((col) => {
-            const collidedTile = level1.entries.find((tile) => tile.id === col.tile.id);
-            level1.context.fillStyle = 'green';
-            level1.context.fillRect(collidedTile.bounding.leftX, collidedTile.bounding.topY, collidedTile.dimensions.height, collidedTile.dimensions.width);
-        });
-        this.bottomCollisions.forEach((col) => {
-            const collidedTile = level1.entries.find((tile) => tile.id === col.tile.id);
-            level1.context.fillStyle = 'yellow';
+            level1.context.fillStyle = 'pink';
             level1.context.fillRect(collidedTile.bounding.leftX, collidedTile.bounding.topY, collidedTile.dimensions.height, collidedTile.dimensions.width);
         });
     }

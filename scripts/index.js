@@ -1,10 +1,20 @@
 const clearBrush = 'rgba(255, 255, 255, 0)';
 
-const detectCollision = (bounding1, bounding2) => {
-    if (bounding1.leftX <= bounding2.rightX && // if 1 left is less than 2 right
-        bounding1.rightX >= bounding2.leftX && // if 1 right is more than 2 left
-        bounding1.topY <= bounding2.bottomY && // if 1 top is less than 2 bottom
-        bounding1.bottomY >= bounding2.topY) { // if 1 bottom is more than 2 top
+const detectContaining = (containing, container) => {
+    if (containing.bounding.leftX >= container.bounding.leftX &&
+        containing.bounding.rightX <= container.bounding.rightX &&
+        containing.bounding.topY >= container.bounding.topY &&
+        containing.bounding.bottomY <= container.bounding.bottomY) {
+        return true;
+    }
+    return false;
+}
+
+const detectCollision = (rec1, rec2) => {
+    if (rec1.bounding.leftX <= rec2.bounding.rightX && // if 1 left is less than 2 right
+        rec1.bounding.rightX >= rec2.bounding.leftX && // if 1 right is more than 2 left
+        rec1.bounding.topY <= rec2.bounding.bottomY && // if 1 top is less than 2 bottom
+        rec1.bounding.bottomY >= rec2.bounding.topY) { // if 1 bottom is more than 2 top
         return true;
     }
     return false;

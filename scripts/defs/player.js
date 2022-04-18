@@ -16,7 +16,7 @@ class Player extends Character {
     watch() {
         document.addEventListener('render', (e) => {
             this.camera(e);
-            this.movePlayer(e);
+            this.handleWalk(e);
             this.handleJump(e);
         }, false);
     }
@@ -36,6 +36,7 @@ class Player extends Character {
         if (Math.abs(clampedDistanceFromLeft) > level1.canvas.width - window.innerWidth) {
             clampedDistanceFromLeft = 0 - level1.canvas.width + window.innerWidth;
         }
+
         // vertical clamps
         if (clampedDistanceFromTop > 0) {
             clampedDistanceFromTop = 0;
@@ -47,34 +48,13 @@ class Player extends Character {
         level1.canvas.style.left = `${clampedDistanceFromLeft}px`;
         level1.canvas.style.top = `${clampedDistanceFromTop}px`
     };
-    movePlayer() {
-        const isLeftCollided = this.leftCollisions.length > 0;
-        const isRightCollided = this.rightCollisions.length > 0;
-
-        if (isLeftCollided) {
-            this.velocity.horizontal = 0;
-            this.setPosition({ x: this.leftCollisions[0].tile.bounding.rightX });
-        }
-
-        if (isRightCollided) {
-            this.velocity.horizontal = 0;
-            this.setPosition({ x: this.rightCollisions[0].tile.bounding.leftX - this.dimensions.width });
-        }
-
+    handleWalk() {
         if (Math.abs(this.velocity.horizontal) < this.maxSpeed) {
             if (this.movement.left) {
-                if (this.bounding.leftX > 0) {
-                    if (!isLeftCollided) {
-                        this.velocity.horizontal--;
-                    }
-                }
+                this.velocity.horizontal--;
             }
             if (this.movement.right) {
-                if (this.bounding.rightX < level1.canvas.width) {
-                    if (!isRightCollided) {
-                        this.velocity.horizontal++;
-                    }
-                }
+                this.velocity.horizontal++;
             }
         }
         this.move({ x: this.friction });
