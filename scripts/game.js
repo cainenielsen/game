@@ -1,89 +1,114 @@
-const level1 = new Level('level_one');
+const level1 = new Level({ name: 'level_one', gridDisplay: false, startingPosition: { x: 2, y: 12 } });
 
-const pushTile = (x, y) => {
-    level1.entries.push(new Tile2({ setPosition: { x, y, useGrid: true } }));
+const pushTile = (x, y, texture) => {
+    level1.entries.push(new Tile({ setPosition: { x, y, useGrid: true }, texture }));
 };
+
+const pushDirt = (x, y) => {
+    pushTile(x, y, dirt);
+}
+
+const pushSpace = (x, y) => {
+    pushTile(x, y, space);
+}
 
 const toggleButton = document.getElementById("toggle");
 toggleButton.addEventListener("click", () => level1.toggle());
 
-pushTile(0, 20);
-pushTile(0, 21);
-pushTile(0, 22);
-pushTile(1, 20);
-pushTile(1, 21);
-pushTile(1, 22);
-pushTile(2, 20);
-pushTile(2, 21);
-pushTile(2, 22);
-pushTile(3, 20);
-pushTile(3, 21);
-pushTile(3, 22);
-pushTile(4, 20);
-pushTile(4, 21);
-pushTile(4, 22);
-pushTile(5, 20);
-pushTile(5, 21);
-pushTile(5, 22);
-pushTile(6, 20);
-pushTile(6, 21);
-pushTile(6, 22);
-pushTile(7, 20);
-pushTile(7, 21);
-pushTile(7, 22);
-pushTile(8, 20);
-pushTile(8, 21);
-pushTile(8, 22);
-pushTile(9, 20);
-pushTile(9, 21);
-pushTile(9, 22);
-pushTile(15, 20);
-pushTile(15, 21);
-pushTile(15, 22);
-pushTile(16, 20);
-pushTile(16, 21);
-pushTile(16, 22);
-pushTile(17, 20);
-pushTile(17, 21);
-pushTile(17, 22);
-pushTile(18, 20);
-pushTile(18, 21);
-pushTile(18, 22);
-pushTile(19, 20);
-pushTile(19, 21);
-pushTile(19, 22);
-pushTile(19, 19);
-pushTile(20, 19);
-pushTile(21, 19);
-pushTile(22, 19);
-pushTile(22, 20);
-pushTile(21, 20);
-pushTile(20, 20);
-pushTile(22, 21);
-pushTile(21, 21);
-pushTile(20, 21);
-pushTile(22, 22);
-pushTile(21, 22);
-pushTile(20, 22);
-pushTile(23, 20);
-pushTile(23, 21);
-pushTile(23, 22);
-pushTile(24, 20);
-pushTile(24, 21);
-pushTile(24, 22);
-pushTile(25, 20);
-pushTile(25, 21);
-pushTile(25, 22);
-pushTile(26, 20);
-pushTile(26, 21);
-pushTile(26, 22);
-pushTile(19, 13);
-pushTile(19, 14);
-pushTile(20, 14);
-pushTile(20, 13);
-pushTile(21, 14);
-pushTile(21, 13);
+pushDirt(0, 30);
+pushDirt(0, 31);
+pushDirt(0, 32);
+pushDirt(1, 30);
+pushDirt(1, 31);
+pushDirt(1, 32);
+pushDirt(2, 30);
+pushDirt(2, 31);
+pushDirt(2, 32);
+pushSpace(3, 30);
+pushSpace(3, 31);
+pushSpace(3, 32);
+pushSpace(4, 30);
+pushSpace(4, 31);
+pushSpace(4, 32);
+pushSpace(5, 30);
+pushSpace(5, 31);
+pushSpace(5, 32);
+pushSpace(6, 30);
+pushSpace(6, 31);
+pushSpace(6, 32);
+pushSpace(7, 30);
+pushSpace(7, 31);
+pushSpace(7, 32);
+pushSpace(8, 30);
+pushSpace(8, 31);
+pushSpace(8, 32);
+pushSpace(9, 30);
+pushSpace(9, 31);
+pushSpace(9, 32);
+pushSpace(10, 30);
+pushSpace(10, 31);
+pushSpace(10, 32);
+pushSpace(11, 30);
+pushSpace(11, 31);
+pushSpace(11, 32);
+pushSpace(12, 30);
+pushSpace(12, 31);
+pushSpace(12, 32);
+pushSpace(13, 30);
+pushSpace(13, 31);
+pushSpace(13, 32);
+pushSpace(14, 30);
+pushSpace(14, 31);
+pushSpace(14, 32);
+pushSpace(15, 30);
+pushSpace(15, 31);
+pushSpace(15, 32);
+pushSpace(16, 30);
+pushSpace(16, 31);
+pushSpace(16, 32);
+pushSpace(17, 30);
+pushSpace(17, 31);
+pushSpace(17, 32);
+pushSpace(18, 30);
+pushSpace(18, 31);
+pushSpace(18, 32);
+pushSpace(19, 30);
+pushSpace(19, 31);
+pushSpace(19, 32);
+pushSpace(22, 30);
+pushSpace(21, 30);
+pushSpace(20, 30);
+pushSpace(22, 31);
+pushSpace(21, 31);
+pushSpace(20, 31);
+pushSpace(22, 32);
+pushSpace(21, 32);
+pushSpace(20, 32);
+pushSpace(23, 30);
+pushSpace(23, 31);
+pushSpace(23, 32);
+pushSpace(24, 30);
+pushSpace(24, 31);
+pushSpace(24, 32);
+pushSpace(25, 30);
+pushSpace(25, 31);
+pushSpace(25, 32);
+pushSpace(26, 30);
+pushSpace(26, 31);
+pushSpace(26, 32);
 
-const somePlayer = new Player({ setPosition: { x: 2, y: 18, useGrid: true }});
+const repeat = (func, times) => {
+    func(times);
+    times && --times && repeat(func, times);
+}
 
-somePlayer.move({ y: -1, useGrid: true });
+repeat((i) => {
+    repeat((j) => {
+        if(j > 40) {
+            pushDirt(i, j);
+        }
+    }, level1.config.gridHeight);
+}, level1.config.gridWidth);
+
+
+const somePlayer = new Player({ setPosition: { x: 2, y: 12, useGrid: true }, height: 4, width: 2});

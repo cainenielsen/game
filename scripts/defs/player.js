@@ -3,7 +3,7 @@ class Player extends Character {
         super({ height, width, setPosition, background, maxSpeed });
         this.background = function () {
             level1.context.fillStyle = 'red';
-            level1.context.fillRect(this.bounding.leftX, this.bounding.topY, this.dimensions.height, this.dimensions.width);
+            level1.context.fillRect(this.bounding.leftX, this.bounding.topY, this.dimensions.width, this.dimensions.height);
         }
         this.movement = {
             left: false,
@@ -11,7 +11,6 @@ class Player extends Character {
             jump: false,
         };
         this.watch();
-
     }
     watch() {
         document.addEventListener('render', (e) => {
@@ -20,14 +19,15 @@ class Player extends Character {
             this.handleJump(e);
         }, false);
     }
+    get cameraXOffset() {
+        return 0 - this.bounding.leftX - this.halfWidth + level1.halfScreenWidth;
+    }
+    get cameraYOffset() {
+        return 0 - this.bounding.topY - this.halfHeight + level1.halfScreenHeight;
+    }
     camera() {
-        const halfPlayer = level1.config.gridSize / 2;
-        const halfScreenWidth = window.innerWidth / 2;
-        const halfScreenHeight = window.innerHeight / 2;
-        const formattedPlayerDistanceFromLeft = 0 - this.bounding.leftX - halfPlayer + halfScreenWidth;
-        const formattedPlayerDistanceFromTop = 0 - this.bounding.topY - halfPlayer + halfScreenHeight;
-        let clampedDistanceFromLeft = formattedPlayerDistanceFromLeft;
-        let clampedDistanceFromTop = formattedPlayerDistanceFromTop;
+        let clampedDistanceFromLeft = this.cameraXOffset;
+        let clampedDistanceFromTop = this.cameraYOffset;
 
         // horizontal clamps
         if (clampedDistanceFromLeft > 0) {
@@ -46,7 +46,7 @@ class Player extends Character {
         }
 
         level1.canvas.style.left = `${clampedDistanceFromLeft}px`;
-        level1.canvas.style.top = `${clampedDistanceFromTop}px`
+        level1.canvas.style.top = `${clampedDistanceFromTop}px`;
     };
     handleWalk() {
         if (Math.abs(this.velocity.horizontal) < this.maxSpeed) {

@@ -2,24 +2,17 @@
 
 ## bugs
 
-if the player is holding the jump button, when they fall off the map they appear below the tiles near the starting place.
-
-
-the player appears to vibrate when attempting to move off the side of the map
-
-the player is not limited to falling above the map
-
 the player can hold down the jump button to continuously jump (which could be a feature but should be able to be controlled)
 
-## tasks
+the player is considered colliding with blocks that are intersected at the corners
 
-build an upgraded in container checker
+when the character 'foot' is not collided but the character 'head' is the player is unable to jump
+
+## tasks
 
 hit box visualization tools
 
 delay on death
-
-death at bottom of screen
 
 code comments
 
@@ -30,6 +23,8 @@ make the game non-zoom-able
 make it possible for non-moving tiles to have collisions
 
 fix the unique names in classes that toggle event listeners
+
+update tiles to only render if they are on the screen
 
 ## features
 

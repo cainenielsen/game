@@ -54,7 +54,7 @@ class Character extends Entry {
         }, false);
     }
     handleGravity() {
-        if (!this.isOnTile && this.isInCanvas) {
+        if (!this.isOnTile) {
             this.velocity.vertical++;
         }
         this.move({ y: this.gravity });
@@ -124,10 +124,12 @@ class Character extends Entry {
         }
     };
     highlightCollisions() {
-        this.collisions.forEach((col) => {
-            const collidedTile = level1.entries.find((tile) => tile.id === col.tile.id);
-            level1.context.fillStyle = 'pink';
-            level1.context.fillRect(collidedTile.bounding.leftX, collidedTile.bounding.topY, collidedTile.dimensions.height, collidedTile.dimensions.width);
-        });
+        if (level1.config.highlightCollisions === true) {
+            this.collisions.forEach((col) => {
+                const collidedTile = level1.entries.find((tile) => tile.id === col.tile.id);
+                level1.context.fillStyle = 'pink';
+                level1.context.fillRect(collidedTile.bounding.leftX, collidedTile.bounding.topY, collidedTile.dimensions.height, collidedTile.dimensions.width);
+            });
+        }
     }
 }

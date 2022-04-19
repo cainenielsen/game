@@ -1,5 +1,5 @@
 class Level extends Index {
-    constructor(name = 'level') {
+    constructor({ name = 'level', gridDisplay = false, highlightCollisions = false, startingPosition = { x: 0, y: 0 } }) {
         super();
         this.canvas = document.createElement('canvas');
         this.canvas.id = name;
@@ -8,14 +8,23 @@ class Level extends Index {
         this.running = true;
         this.entries = [];
         this.config = {
-            gridSize: Math.floor(window.innerHeight / 16),
-            gridDisplay: false
+            gridSize: Math.floor(window.innerHeight / 32),
+            gridDisplay: gridDisplay,
+            highlightCollisions: highlightCollisions
         }
-        this.config.canvasWidth = 128 * this.config.gridSize;
-        this.config.canvasHeight = 32 * this.config.gridSize,
-        this.config.startingPosition = { x: 2 * this.config.gridSize, y: 17 * this.config.gridSize };
+        this.config.gridWidth = 128;
+        this.config.gridHeight = 128;
+        this.config.canvasWidth = this.config.gridWidth * this.config.gridSize;
+        this.config.canvasHeight = this.config.gridHeight * this.config.gridSize,
+        this.config.startingPosition = { x: startingPosition.x * this.config.gridSize, y: startingPosition.y * this.config.gridSize };
         this.renderEvent = new Event('render');
         this.init();
+    }
+    get halfScreenWidth() {
+        return window.innerWidth / 2;
+    }
+    get halfScreenHeight() {
+        return window.innerHeight / 2;
     }
     get bounding() {
         return {

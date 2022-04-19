@@ -13,6 +13,12 @@ class Entry extends Index {
         this.setPosition({ x, y, useGrid });
         this.render();
     }
+    get halfWidth() {
+        return this.dimensions.height / 2;
+    }
+    get halfHeight() {
+        return this.dimensions.width / 2;
+    }
     get bounding() {
         return {
             topY: this.#position.topY,
@@ -34,7 +40,7 @@ class Entry extends Index {
             this.background();
         } else {
             level1.context.fillStyle = 'teal';
-            level1.context.fillRect(this.bounding.leftX, this.bounding.topY, this.dimensions.height, this.dimensions.width);
+            level1.context.fillRect(this.bounding.leftX, this.bounding.topY, this.dimensions.width, this.dimensions.height);
         }
     }
     setPosition({ x = this.bounding.leftX, y = this.bounding.topY, useGrid = false }) {
