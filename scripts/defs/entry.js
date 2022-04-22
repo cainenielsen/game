@@ -27,6 +27,14 @@ class Entry extends Index {
             rightX: this.#position.leftX + this.dimensions.width,
         }
     }
+    get gridBounding() {
+        return {
+            topY: this.bounding.topY / level1.config.gridSize,
+            bottomY: this.bounding.bottomY / level1.config.gridSize,
+            leftX: this.bounding.leftX / level1.config.gridSize,
+            rightX: this.bounding.rightX / level1.config.gridSize,
+        }
+    }
     get centerPosition() {
         return {
             x: this.bounding.leftX + (this.dimensions.width / 2),
