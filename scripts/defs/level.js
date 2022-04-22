@@ -7,6 +7,7 @@ class Level extends Index {
         document.body.appendChild(this.canvas);
         this.running = true;
         this.entries = [];
+        this.tiles = [];
         this.config = {
             gridSize: Math.floor(window.innerHeight / 32),
             gridDisplay: gridDisplay,
@@ -34,6 +35,40 @@ class Level extends Index {
             bottomY: this.config.canvasHeight,
         }
     }
+    get cameraFrame() {
+        return {
+            topY: this.player.clampedDistanceFromTop,
+            leftX: this.player.clampedDistanceFromLeft,
+            bottomY: this.player.clampedDistanceFromTop + window.innerHeight,
+            rightX: this.player.clampedDistanceFromLeft + window.innerWidth
+        }
+    }
+    get tilesInFrame() {
+        const renderBox = this.player.renderBox;
+        return this.tiles.filter((tile) => isBetween(renderBox.leftX, renderBox.rightX, tile.position.x) && isBetween(renderBox.topY, renderBox.bottomY, tile.position.y))
+    }
+    addTiles(tilesArray) {
+        this.tiles = tilesArray;
+        // console.log(`${this.tiles.length} tiles added`);
+    }
+    renderTiles() {
+        // console.log(`${this.tilesInFrame.length} tiles to render`);
+        this.tilesInFrame.forEach((tile) => {
+            const entriesMatchingTile = this.entries.filter((entry) => entry.gridBounding.leftX === tile.position.x && entry.gridBounding.topY === tile.position.y);
+            if (entriesMatchingTile.length < 1) {
+                this.entries.push(new Tile({ setPosition: { x: tile.position.x, y: tile.position.y, useGrid: true }, texture: tile.texture }));
+            }
+        });
+    }
+    cleanUpEntries() {
+        // console.log(`${this.entries.length} entries to audit`);
+        this.entries.forEach((entry, index) => {
+            const tilesMatchingEntry = this.tilesInFrame.filter((tile) => tile.position.x === entry.gridBounding.leftX && tile.position.y === entry.gridBounding.topY);
+            if (tilesMatchingEntry.length < 1) {
+                this.entries.splice(index);
+            }
+        });
+    }
     toggle() {
         this.running ? this.destroy() : this.init();
     }
@@ -48,6 +83,8 @@ class Level extends Index {
     render(timestamp) {
         this.alignCanvas();
         this.clearCanvas();
+        this.cleanUpEntries();
+        this.renderTiles();
 
         // dispatch re-render event
         document.dispatchEvent(this.renderEvent, { detail: { timestamp } });
