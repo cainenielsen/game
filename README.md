@@ -51,3 +51,11 @@ coins
 ## research
 
 when using classes in js is it best to use multiple listeners for events when extending multiple layers?
+
+## Projects
+
+### Render Box
+
+- Separate games and levels
+- Develop a process for getting the dimentions of the camera as it follows the player
+- Update the level to accept a JSON input of tiles and render those tiles based on the render box around the player
