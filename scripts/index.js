@@ -45,3 +45,8 @@ function detectCollision2(rec1, rec2) {
 }
 
 const isBetween = (num1, num2, value) => value > num1 && value < num2;
+
+const repeat = (func, times) => {
+    func(times);
+    times && --times && repeat(func, times);
+}

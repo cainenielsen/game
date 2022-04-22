@@ -97,18 +97,13 @@ pushSpace(26, 30);
 pushSpace(26, 31);
 pushSpace(26, 32);
 
-const repeat = (func, times) => {
-    func(times);
-    times && --times && repeat(func, times);
-}
-
-repeat((i) => {
-    repeat((j) => {
-        if(j > 40) {
-            pushDirt(i, j);
-        }
-    }, level1.config.gridHeight);
-}, level1.config.gridWidth);
+// repeat((i) => {
+//     repeat((j) => {
+//         if(j > 40) {
+//             pushDirt(i, j);
+//         }
+//     }, level1.config.gridHeight);
+// }, level1.config.gridWidth);
 
 
 const somePlayer = new Player({ setPosition: { x: 2, y: 12, useGrid: true }, height: 4, width: 2});
