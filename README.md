@@ -59,3 +59,7 @@ when using classes in js is it best to use multiple listeners for events when ex
 - Separate games and levels
 - Develop a process for getting the dimentions of the camera as it follows the player
 - Update the level to accept a JSON input of tiles and render those tiles based on the render box around the player
+
+## resources
+
+https://gamedev.stackexchange.com/questions/134834/javascript-game-camera-that-follows-my-player
