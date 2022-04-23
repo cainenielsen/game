@@ -1,6 +1,7 @@
 body {
     margin: 0px;
     overflow: hidden;
+    position: relative;
 }
 
 #level_one {
@@ -17,4 +18,37 @@ nav {
     top: 0px;
     left: 0px;
     z-index: 1;
+    display: grid;
+    grid-template-columns: min-content;
+    padding-left: 32px;
+    align-items: center;
+}
+
+
+div {
+    max-width: 75ch;
+    margin: auto;
+    height: 50vh;
+    transform: translateY(50%);
+    background-color: rgba(0, 0, 0, 0.25);
+    box-sizing: border-box;
+    text-align: center;
+    padding: 20px;
+}
+
+button {
+    height: 48px;
+    border: none;
+    border-radius: 16px;
+    padding-left: 32px;
+    padding-right: 32px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    background-color: rgb(47, 165, 0);
+    color: white;
+}
+
+button:hover {
+    filter: brightness(110%);
 }

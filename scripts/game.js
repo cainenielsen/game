@@ -1,4 +1,8 @@
+const myGame = new Game();
+
 const level1 = new Level({ name: 'level_one', gridDisplay: false, startingPosition: { x: 2, y: 12 } });
+
+myGame.levels.push(level1);
 
 const pushTile = (x, y, texture) => {
     level1.entries.push(new Tile({ setPosition: { x, y, useGrid: true }, texture }));
@@ -11,6 +15,9 @@ const pushDirt = (x, y) => {
 const pushSpace = (x, y) => {
     pushTile(x, y, space);
 }
+
+const startButton = document.getElementById("start");
+startButton.addEventListener("click", () => myGame.start());
 
 const toggleButton = document.getElementById("toggle");
 toggleButton.addEventListener("click", () => level1.toggle());

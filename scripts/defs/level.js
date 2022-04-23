@@ -4,7 +4,6 @@ class Level extends Index {
         this.canvas = document.createElement('canvas');
         this.canvas.id = name;
         this.context = this.canvas.getContext("2d");
-        document.body.appendChild(this.canvas);
         this.running = true;
         this.entries = [];
         this.config = {
@@ -18,7 +17,6 @@ class Level extends Index {
         this.config.canvasHeight = this.config.gridHeight * this.config.gridSize,
         this.config.startingPosition = { x: startingPosition.x * this.config.gridSize, y: startingPosition.y * this.config.gridSize };
         this.renderEvent = new Event('render');
-        this.init();
     }
     get halfScreenWidth() {
         return window.innerWidth / 2;
@@ -35,13 +33,17 @@ class Level extends Index {
         }
     }
     toggle() {
-        this.running ? this.destroy() : this.init();
+        this.running ? this.pause() : this.play();
     }
     init() {
+        document.body.appendChild(this.canvas);
+        this.play();
+    };
+    play() {
         this.running = true;
         this.currentFrame = window.requestAnimationFrame((e) => this.render(e));
-    };
-    destroy() {
+    }
+    pause() {
         this.running = false;
         window.cancelAnimationFrame(this.currentFrame);
     }
