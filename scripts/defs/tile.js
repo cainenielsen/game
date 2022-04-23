@@ -5,14 +5,17 @@ class Texture {
     }
 }
 
-const dirt = new Texture('assets/dirt.png');
-const space = new Texture('assets/space-tile.jpg');
+const textures = {
+    dirt: new Texture('assets/dirt.png'),
+    space: new Texture('assets/space-tile.jpg')
+};
 
 class Tile extends Entry {
-    constructor({ height, width, setPosition, texture = dirt }) {
-        super({ height, width, setPosition, background: texture });
+    constructor({ height, width, setPosition, texture = 'dirt' }) {
+        const sprite = textures[texture];
+        super({ height, width, setPosition, background: sprite });
         this.background = function () {
-            level1.context.drawImage(texture.img, this.bounding.leftX, this.bounding.topY, level1.config.gridSize, level1.config.gridSize);
+            level1.context.drawImage(sprite.img, this.bounding.leftX, this.bounding.topY, level1.config.gridSize, level1.config.gridSize);
         }
         this.gridDisplay();
     }

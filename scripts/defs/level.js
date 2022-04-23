@@ -12,6 +12,7 @@ class Level extends Index {
         this.context = this.canvas.getContext("2d");
         this.running = true;
         this.entries = [];
+        this.tiles = [];
         this.config = {
             gridSize: Math.floor(window.innerHeight / 32),
             gridDisplay: gridDisplay,
@@ -23,6 +24,7 @@ class Level extends Index {
         this.config.canvasHeight = this.config.gridHeight * this.config.gridSize,
         this.config.startingPosition = { x: startingPosition.x * this.config.gridSize, y: startingPosition.y * this.config.gridSize };
         this.renderEvent = new Event('render');
+        this.loadTiles();
     }
     get bounding() {
         return {
@@ -39,6 +41,24 @@ class Level extends Index {
             topY: this.player.centerPosition.y - this.canvas.height / 2,
             bottomY: this.player.centerPosition.y + this.canvas.height / 2
         }
+    }
+    async loadTiles() {
+        const response = await fetch('/scripts/tiles.json').catch((error) => {
+            console.error(error);
+        });
+        const data = await response.json();
+        data.forEach((tile) => {
+            this.tiles.push(tile);
+        });
+        this.renderTiles();
+    }
+    renderTiles() {
+        this.tiles.forEach((tile) => {
+            const entiresMatchingTile = this.entries.filter((entry) => entry.bounding.leftX === tile.x && entry.bounding.topY === tile.y);
+            if(entiresMatchingTile.length < 1) {
+                level1.entries.push(new Tile({ setPosition: { x: tile.x, y: tile.y, useGrid: true }, texture: tile.texture }));
+            }
+        });
     }
     toggle() {
         this.running ? this.pause() : this.play();
