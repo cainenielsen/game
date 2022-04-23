@@ -1,13 +1,12 @@
 body {
     margin: 0px;
     overflow: hidden;
-    position: relative;
 }
 
 #level_one {
     background-image: url('../assets/seamless-space-backgrounds/1024x1024/blue-nebula/8.png');
-    /* background-size: contain; */
-    position: absolute;
+    background-size: cover;
+    position: fixed;
 }
 
 nav {

@@ -3,6 +3,12 @@ class Level extends Index {
         super();
         this.canvas = document.createElement('canvas');
         this.canvas.id = name;
+        this.canvas.style.left = '0px';
+        this.canvas.style.top = '0px';
+        this.canvas.style.height = '100%';
+        this.canvas.style.width = '100%';
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
         this.context = this.canvas.getContext("2d");
         this.running = true;
         this.entries = [];
@@ -18,18 +24,20 @@ class Level extends Index {
         this.config.startingPosition = { x: startingPosition.x * this.config.gridSize, y: startingPosition.y * this.config.gridSize };
         this.renderEvent = new Event('render');
     }
-    get halfScreenWidth() {
-        return window.innerWidth / 2;
-    }
-    get halfScreenHeight() {
-        return window.innerHeight / 2;
-    }
     get bounding() {
         return {
             topY: 0,
             leftX: 0,
             rightX: this.config.canvasWidth,
             bottomY: this.config.canvasHeight,
+        }
+    }
+    get cameraBounding() {
+        return {
+            leftX: this.player.centerPosition.x - this.canvas.width / 2,
+            rightX: this.player.centerPosition.x + this.canvas.width / 2,
+            topY: this.player.centerPosition.y - this.canvas.height / 2,
+            bottomY: this.player.centerPosition.y + this.canvas.height / 2
         }
     }
     toggle() {
@@ -48,8 +56,8 @@ class Level extends Index {
         window.cancelAnimationFrame(this.currentFrame);
     }
     render(timestamp) {
-        this.alignCanvas();
         this.clearCanvas();
+        this.handleCamera();
 
         // dispatch re-render event
         document.dispatchEvent(this.renderEvent, { detail: { timestamp } });
@@ -57,12 +65,13 @@ class Level extends Index {
         // request next animation frame
         this.currentFrame = window.requestAnimationFrame((e) => this.render(e));
     }
-    alignCanvas() {
-        this.canvas.width = this.config.canvasWidth;
-        this.canvas.height = this.config.canvasHeight;
-    };
+    handleCamera() {
+        const cameraX = clamp(this.cameraBounding.leftX, this.bounding.leftX, this.bounding.rightX - this.canvas.width);
+        const cameraY = clamp(this.cameraBounding.topY, this.bounding.topY, this.bounding.bottomY - this.canvas.height);
+        this.context.translate(-cameraX, -cameraY);
+    }
     clearCanvas() {
-        this.context.fillStyle = clearBrush;
-        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.context.setTransform(1, 0, 0, 1, 0, 0);
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     };
 }

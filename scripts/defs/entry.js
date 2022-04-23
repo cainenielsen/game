@@ -37,8 +37,9 @@ class Entry extends Index {
     }
     get centerPosition() {
         return {
-            x: this.bounding.leftX + (this.dimensions.width / 2),
-            y: this.bounding.topY + (this.dimensions.height / 2) }
+            x: this.bounding.leftX + this.halfWidth,
+            y: this.bounding.topY + this.halfHeight
+        }
     }
     render() {
         document.addEventListener('render', (e) => this.draw(e), false);

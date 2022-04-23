@@ -114,3 +114,4 @@ pushSpace(26, 32);
 
 
 const somePlayer = new Player({ setPosition: { x: 2, y: 12, useGrid: true }, height: 4, width: 2});
+level1.player = somePlayer;

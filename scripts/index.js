@@ -1,5 +1,3 @@
-const clearBrush = 'rgba(255, 255, 255, 0)';
-
 const detectContaining = (containing, container) => {
     if (containing.bounding.leftX >= container.bounding.leftX &&
         containing.bounding.rightX <= container.bounding.rightX &&
@@ -49,4 +47,10 @@ const isBetween = (num1, num2, value) => value > num1 && value < num2;
 const repeat = (func, times) => {
     func(times);
     times && --times && repeat(func, times);
+}
+
+const clamp = (value, min, max) => {
+    if(value < min) return min;
+    else if(value > max) return max;
+    return value;
 }
