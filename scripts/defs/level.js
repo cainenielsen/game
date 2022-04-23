@@ -54,8 +54,8 @@ class Level extends Index {
     }
     renderTiles() {
         this.tiles.forEach((tile) => {
-            const entiresMatchingTile = this.entries.filter((entry) => entry.bounding.leftX === tile.x && entry.bounding.topY === tile.y);
-            if(entiresMatchingTile.length < 1) {
+            const entriesMatchingTile = this.entries.filter((entry) => entry.gridBounding.leftX === tile.x && entry.gridBounding.topY === tile.y);
+            if(entriesMatchingTile.length < 1) {
                 level1.entries.push(new Tile({ setPosition: { x: tile.x, y: tile.y, useGrid: true }, texture: tile.texture }));
             }
         });
