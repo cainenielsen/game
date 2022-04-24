@@ -22,8 +22,7 @@ class Level extends Index {
         this.config.gridHeight = 128;
         this.config.canvasWidth = this.config.gridWidth * this.config.gridSize;
         this.config.canvasHeight = this.config.gridHeight * this.config.gridSize,
-        this.config.startingPosition = { x: startingPosition.x * this.config.gridSize, y: startingPosition.y * this.config.gridSize };
-        this.renderEvent = new Event('render');
+            this.config.startingPosition = { x: startingPosition.x * this.config.gridSize, y: startingPosition.y * this.config.gridSize };
         this.loadTiles();
     }
     get bounding() {
@@ -42,6 +41,12 @@ class Level extends Index {
             bottomY: this.player.centerPosition.y + this.canvas.height / 2
         }
     }
+    get tilesOnScreen() {
+        return this.tiles.filter((tile) => {
+            return isBetween(this.cameraBounding.leftX / this.config.gridSize, this.cameraBounding.rightX / this.config.gridSize, tile.x) &&
+            isBetween(this.cameraBounding.topY / this.config.gridSize, this.cameraBounding.bottomY / this.config.gridSize, tile.y);
+        })
+    }
     async loadTiles() {
         const response = await fetch('/scripts/tiles.json').catch((error) => {
             console.error(error);
@@ -53,10 +58,20 @@ class Level extends Index {
         this.renderTiles();
     }
     renderTiles() {
-        this.tiles.forEach((tile) => {
+        this.tilesOnScreen.forEach((tile) => {
             const entriesMatchingTile = this.entries.filter((entry) => entry.gridBounding.leftX === tile.x && entry.gridBounding.topY === tile.y);
-            if(entriesMatchingTile.length < 1) {
+            if (entriesMatchingTile.length < 1) {
                 level1.entries.push(new Tile({ setPosition: { x: tile.x, y: tile.y, useGrid: true }, texture: tile.texture }));
+            }
+        });
+    }
+    cleanupEntries() {
+        this.entries = this.entries.filter((entry) => entry);
+        this.entries.forEach((entry, index) => {
+            const tilesOnSCreenMatchingEntry = this.tilesOnScreen.filter((tile) => tile.x === entry.gridBounding.leftX && tile.y === entry.gridBounding.topY);
+            if (tilesOnSCreenMatchingEntry.length < 1) {
+                this.entries[index].kill();
+                delete this.entries[index];
             }
         });
     }
@@ -78,9 +93,12 @@ class Level extends Index {
     render(timestamp) {
         this.clearCanvas();
         this.handleCamera();
+        this.renderTiles();
+        this.cleanupEntries();
 
         // dispatch re-render event
-        document.dispatchEvent(this.renderEvent, { detail: { timestamp } });
+        let renderEvent = new CustomEvent('render', { detail: { timestamp } });
+        document.dispatchEvent(renderEvent);
 
         // request next animation frame
         this.currentFrame = window.requestAnimationFrame((e) => this.render(e));

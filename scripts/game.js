@@ -32,7 +32,6 @@ level1.canvas.addEventListener("mousedown", function (e) {
     const elementRelativeY = e.clientY - translatedY;
     const xPos = Math.trunc(elementRelativeX / level1.config.gridSize);
     const yPos = Math.trunc(elementRelativeY / level1.config.gridSize);
-    console.log(level1.tiles);
     const tileMatchingPosition = level1.tiles.find((tile) => tile.x === xPos && tile.y === yPos);
     if(!tileMatchingPosition) {
         level1.tiles.push({
@@ -40,10 +39,7 @@ level1.canvas.addEventListener("mousedown", function (e) {
             y: yPos,
             texture: selectedTile
         });
-        level1.renderTiles();
-        console.log(JSON.stringify(level1.tiles));
-    } else {
-        console.log('clunk');
+        // console.log(JSON.stringify(level1.tiles));
     }
 }, false);
 

@@ -42,7 +42,10 @@ class Entry extends Index {
         }
     }
     render() {
-        document.addEventListener('render', (e) => this.draw(e), false);
+        document.addEventListener('render', this.renderFunction = (e) => this.draw(e), false);
+    }
+    kill() {
+        document.removeEventListener('render', this.renderFunction, false);
     }
     draw() {
         if (this.background) {

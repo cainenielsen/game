@@ -18,7 +18,12 @@ class Player extends Character {
             this.handleJump(e);
         }, false);
     }
-    handleWalk() {
+    handleWalk(e) {
+        this.lastTime = 0;
+        const fps = 1 / ( (performance.now() - e.detail.timestamp) / 1000 );
+        this.lastTime = e.timestamp;
+        level1.context.fillStyle = 'white';
+        level1.context.fillText(Math.trunc(fps), this.bounding.leftX + 10, this.bounding.topY + 10);
         if (Math.abs(this.velocity.horizontal) < this.maxSpeed) {
             if (this.movement.left) {
                 this.velocity.horizontal--;
