@@ -5,16 +5,22 @@ class Level extends Index {
         this.canvas.id = name;
         this.canvas.style.left = '0px';
         this.canvas.style.top = '0px';
-        this.canvas.style.height = '100%';
-        this.canvas.style.width = '100%';
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-        this.context = this.canvas.getContext("2d");
+        // this.canvas.style.height = '100%';
+        // this.canvas.style.width = '100%';
+        // this.canvas.width = window.innerWidth;
+        // this.canvas.height = window.innerHeight;
+        this.zoomOptions = {
+            small: 48,
+            medium: 32,
+            large: 24
+        }
+        this.context = this.canvas.getContext("2d", { alpha: true });
         this.running = true;
         this.entries = [];
         this.tiles = [];
+        this.zoomSelection = this.zoomOptions['small'];
         this.config = {
-            gridSize: Math.floor(window.innerHeight / 32),
+            gridSize: Math.floor(screen.width / this.zoomSelection),
             gridDisplay: gridDisplay,
             highlightCollisions: highlightCollisions
         }
@@ -42,6 +48,7 @@ class Level extends Index {
         }
     }
     get tilesOnScreen() {
+        this.tiles = this.tiles.filter((tile) => tile);
         return this.tiles.filter((tile) => {
             return isBetween(this.cameraBounding.leftX / this.config.gridSize, this.cameraBounding.rightX / this.config.gridSize, tile.x) &&
             isBetween(this.cameraBounding.topY / this.config.gridSize, this.cameraBounding.bottomY / this.config.gridSize, tile.y);
@@ -92,6 +99,7 @@ class Level extends Index {
         window.cancelAnimationFrame(this.currentFrame);
     }
     render(timestamp) {
+        this.setupCanvas();
         this.clearCanvas();
         this.handleCamera();
         this.createEntries();
@@ -104,6 +112,27 @@ class Level extends Index {
 
         // request next animation frame
         this.currentFrame = window.requestAnimationFrame((e) => this.render(e));
+    }
+    setupCanvas() {
+        // See https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Optimizing_canvas#scaling_for_high_resolution_displays
+        // for more details
+
+        // Get the DPR and size of the canvas
+        const dpr = window.devicePixelRatio;
+
+        // Set the "actual" size of the canvas
+        this.canvas.width = window.innerWidth * dpr;
+        this.canvas.height = window.innerHeight * dpr;
+
+        // Scale the context to ensure correct drawing operations
+        this.context.scale(dpr, dpr);
+
+        // Set the "drawn" size of the canvas
+        this.canvas.style.width = window.innerWidth + 'px';
+        this.canvas.style.height = window.innerHeight + 'px';
+
+        // Set the grid size
+        this.config.gridSize = Math.floor(screen.width / this.zoomOptions['small']);
     }
     handleCamera() {
         const cameraX = clamp(this.cameraBounding.leftX, this.bounding.leftX, this.bounding.rightX - this.canvas.width);
