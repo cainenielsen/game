@@ -3,15 +3,13 @@ class Entry extends Index {
         topY: 0,
         leftX: 0,
     }
-    constructor({ height = 1, width = 1, setPosition: { x = 0, y = 0, useGrid = false }, background }) {
+    constructor({ height = 1, width = 1, setPosition: { x = 0, y = 0, useGrid = false } }) {
         super();
-        this.background = background;
         this.dimensions = {
             height: height * level1.config.gridSize,
             width: width * level1.config.gridSize
         }
         this.setPosition({ x, y, useGrid });
-        this.render();
     }
     get halfWidth() {
         return this.dimensions.height / 2;
@@ -39,20 +37,6 @@ class Entry extends Index {
         return {
             x: this.bounding.leftX + this.halfWidth,
             y: this.bounding.topY + this.halfHeight
-        }
-    }
-    render() {
-        document.addEventListener('render', this.renderFunction = (e) => this.draw(e), false);
-    }
-    kill() {
-        document.removeEventListener('render', this.renderFunction, false);
-    }
-    draw() {
-        if (this.background) {
-            this.background();
-        } else {
-            level1.context.fillStyle = 'teal';
-            level1.context.fillRect(this.bounding.leftX, this.bounding.topY, this.dimensions.width, this.dimensions.height);
         }
     }
     setPosition({ x = this.bounding.leftX, y = this.bounding.topY, useGrid = false }) {

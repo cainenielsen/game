@@ -12,12 +12,12 @@ const textures = {
 
 class Tile extends Entry {
     constructor({ height, width, setPosition, texture = 'dirt' }) {
-        const sprite = textures[texture];
-        super({ height, width, setPosition, background: sprite });
-        this.background = function () {
-            level1.context.drawImage(sprite.img, this.bounding.leftX, this.bounding.topY, level1.config.gridSize, level1.config.gridSize);
-        }
+        super({ height, width, setPosition });
+        this.sprite = textures[texture];
         this.gridDisplay();
+    }
+    draw() {
+        level1.context.drawImage(this.sprite.img, this.bounding.leftX, this.bounding.topY, level1.config.gridSize, level1.config.gridSize);
     }
     gridDisplay() {
         if (level1.config.gridDisplay) {

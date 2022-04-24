@@ -55,9 +55,11 @@ class Level extends Index {
         data.forEach((tile) => {
             this.tiles.push(tile);
         });
-        this.renderTiles();
     }
     renderTiles() {
+        this.entries.forEach((entry) => entry.draw());
+    }
+    createEntries(){
         this.tilesOnScreen.forEach((tile) => {
             const entriesMatchingTile = this.entries.filter((entry) => entry.gridBounding.leftX === tile.x && entry.gridBounding.topY === tile.y);
             if (entriesMatchingTile.length < 1) {
@@ -70,7 +72,6 @@ class Level extends Index {
         this.entries.forEach((entry, index) => {
             const tilesOnSCreenMatchingEntry = this.tilesOnScreen.filter((tile) => tile.x === entry.gridBounding.leftX && tile.y === entry.gridBounding.topY);
             if (tilesOnSCreenMatchingEntry.length < 1) {
-                this.entries[index].kill();
                 delete this.entries[index];
             }
         });
@@ -93,6 +94,7 @@ class Level extends Index {
     render(timestamp) {
         this.clearCanvas();
         this.handleCamera();
+        this.createEntries();
         this.renderTiles();
         this.cleanupEntries();
 

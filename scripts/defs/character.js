@@ -1,6 +1,6 @@
 class Character extends Entry {
-    constructor({ height, width, setPosition, background, maxSpeed = 100 }) {
-        super({ height, width, setPosition, background });
+    constructor({ height, width, setPosition, maxSpeed = 100 }) {
+        super({ height, width, setPosition });
         this.maxSpeed = maxSpeed;
         this.jumping = false;
         this.collisions = [];
