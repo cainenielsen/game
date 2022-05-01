@@ -14,7 +14,6 @@ export default class Character extends Entity {
             vertical: 0,
             horizontal: 0
         };
-        this.init();
     }
     get leftCollisions() {
         return this.collisions.filter((collision) => collision.side === 'left' && collision.tile.bounding.topY < this.bounding.bottomY);
@@ -43,21 +42,14 @@ export default class Character extends Entity {
     get isRightCollided() {
         return this.rightCollisions.length > 0;
     }
-    init() {
-        // we should move this stuff to a callable function that is run by the level
-        // get rid of the event listener
-        document.addEventListener('render', (e) => {
-            this.handleMomentum(e);
-            this.handleGravity(e);
-            this.handleVelocityEntropy(e);
-            this.highlightCollisions(e);
-        }, false);
-        document.addEventListener('animate', (e) => {
-            // might be able to move these to render soon
-            this.handleStageLimits(e);
-            this.gatherCollisions(e);
-            this.enforceCollisions(e);
-        }, false);
+    render() {
+        this.handleMomentum();
+        this.handleGravity();
+        this.handleVelocityEntropy();
+        this.highlightCollisions();
+        this.handleStageLimits();
+        this.gatherCollisions();
+        this.enforceCollisions();
     }
     handleGravity() {
         if (!this.isOnTile) {

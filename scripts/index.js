@@ -18,6 +18,10 @@ const somePlayer = new Player({
     width: 2.
 }, level1);
 
+level1.addCharacter(somePlayer);
+level1.setPlayer(somePlayer);
+level1.follow(somePlayer);
+
 mouseModule(level1, somePlayer, mouseHandler);
 
 keyboardModule(level1, somePlayer, {
@@ -25,8 +29,5 @@ keyboardModule(level1, somePlayer, {
     keyUpHandler,
     keyPressHandler
 });
-
-level1.addCharacter(somePlayer);
-level1.follow(somePlayer);
 
 setupInterface(superGame, level1, somePlayer);

@@ -11,9 +11,9 @@ export default class Player extends Character {
         this.facing = 'right';
         this.selectedTile = 'dirt';
     }
-    animate(e) {
-        this.handleWalk(e);
-        this.handleJump(e);
+    animate() {
+        this.handleWalk();
+        this.handleJump();
         this.level.context.fillStyle = 'tan';
         this.level.context.fillRect(this.bounding.leftX, this.bounding.topY, this.dimensions.width, this.dimensions.height);
         if (this.facing === 'left') {

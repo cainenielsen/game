@@ -3,6 +3,7 @@ import Index from './index.js';
 import Tile from './tile.js';
 import Character from './character.js';
 import Entity from './entity.js';
+import Player from './player.js';
 // utils
 import { clamp, isBetween } from '../utils/helpers.js';
 
@@ -100,7 +101,17 @@ export default class Level extends Index {
         this.entries.forEach((entry) => entry.draw());
     }
     renderCharacters() {
-        this.characters.forEach((character) => character.animate());
+        this.characters.forEach((character) => character.render());
+    }
+    setPlayer(player) {
+        if (player instanceof Player) {
+            this.player = player;
+        }
+    }
+    animatePlayer() {
+        if (this.player) {
+            this.player.animate();
+        }
     }
     createEntries() {
         // console.log(`${this.tilesOnScreen.length} tiles on screen`);
@@ -155,16 +166,9 @@ export default class Level extends Index {
             this.createEntries();
             this.renderTiles();
             this.cleanupEntries();
+            this.animatePlayer();
             this.renderCharacters();
-
-            // dispatch re-render event
-            let renderEvent = new CustomEvent('render', { detail: { timestamp } });
-            document.dispatchEvent(renderEvent);
         }
-
-        // dispatch re-render event
-        let animateEvent = new CustomEvent('animate', { detail: { timestamp } });
-        document.dispatchEvent(animateEvent);
         // request next animation frame
         this.currentFrame = window.requestAnimationFrame((e) => this.render(e));
     }
