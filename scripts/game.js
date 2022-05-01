@@ -75,4 +75,4 @@ level1.canvas.addEventListener("contextmenu", e => e.preventDefault());
 
 const somePlayer = new Player({ setPosition: { x: 2, y: 12, useGrid: true }, height: 4, width: 2 });
 
-level1.player = somePlayer;
+level1.follow(somePlayer);

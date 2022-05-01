@@ -1,4 +1,4 @@
-class Character extends Entry {
+class Character extends Entity {
     constructor({ height, width, setPosition, maxSpeed = 7.5 }) {
         super({ height, width, setPosition });
         this.maxSpeed = maxSpeed;

@@ -11,7 +11,7 @@ const textures = {
     andesite: new Texture('assets/norzeteus-space-1-18-2/assets/minecraft/textures/block/andesite.png')
 };
 
-class Tile extends Entry {
+class Tile extends Entity {
     constructor({ height, width, setPosition, texture = 'dirt' }) {
         super({ height, width, setPosition });
         this.sprite = textures[texture];

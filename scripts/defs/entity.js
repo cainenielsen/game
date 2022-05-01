@@ -1,4 +1,4 @@
-class Entry extends Index {
+class Entity extends Index {
     #position = {
         topY: 0,
         leftX: 0,

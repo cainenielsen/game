@@ -16,8 +16,12 @@ class Level extends Index {
         }
         this.context = this.canvas.getContext("2d", { alpha: true });
         this.running = true;
+        this.characters = [];
         this.entries = [];
         this.tiles = [];
+        this.camera = {
+            follow: false
+        }
         this.fps = 60;
         this.then = 0;
         this.zoomSelection = this.zoomOptions['small'];
@@ -46,10 +50,10 @@ class Level extends Index {
     }
     get cameraBounding() {
         return {
-            leftX: this.player.centerPosition.x - this.canvas.width / 2,
-            rightX: this.player.centerPosition.x + this.canvas.width / 2,
-            topY: this.player.centerPosition.y - this.canvas.height / 2,
-            bottomY: this.player.centerPosition.y + this.canvas.height / 2
+            leftX: this.camera.entity.centerPosition.x - this.canvas.width / 2,
+            rightX: this.camera.entity.centerPosition.x + this.canvas.width / 2,
+            topY: this.camera.entity.centerPosition.y - this.canvas.height / 2,
+            bottomY: this.camera.entity.centerPosition.y + this.canvas.height / 2
         }
     }
     get tilesOnScreen() {
@@ -58,6 +62,16 @@ class Level extends Index {
             return isBetween((this.cameraBounding.leftX / this.config.gridSize) - (this.canvas.width / 2), (this.cameraBounding.rightX / this.config.gridSize) + (this.canvas.width / 2), tile.x) &&
                 isBetween((this.cameraBounding.topY / this.config.gridSize) - (this.canvas.height / 2), (this.cameraBounding.bottomY / this.config.gridSize) + (this.canvas.height / 2), tile.y);
         })
+    }
+    follow(entity) {
+        if (entity instanceof Entity) {
+            this.camera = {
+                entity,
+                follow: true
+            };
+        } else {
+            console.error('cannot follow non-entity object');
+        }
     }
     async loadTiles() {
         const response = await fetch('/scripts/tiles.json').catch((error) => {
@@ -70,6 +84,9 @@ class Level extends Index {
     }
     renderTiles() {
         this.entries.forEach((entry) => entry.draw());
+    }
+    renderCharacters() {
+        this.characters.forEach((character) => character.draw());
     }
     createEntries() {
         this.tilesOnScreen.forEach((tile) => {
@@ -112,6 +129,7 @@ class Level extends Index {
             this.handleCamera();
             this.createEntries();
             this.renderTiles();
+            this.renderCharacters();
             this.cleanupEntries();
 
             // dispatch re-render event
@@ -147,9 +165,15 @@ class Level extends Index {
         this.config.gridSize = Math.floor(screen.width / this.zoomOptions['small']);
     }
     handleCamera() {
-        const cameraX = clamp(this.cameraBounding.leftX, this.bounding.leftX, this.bounding.rightX - this.canvas.width);
-        const cameraY = clamp(this.cameraBounding.topY, this.bounding.topY, this.bounding.bottomY - this.canvas.height);
-        this.context.translate(-cameraX, -cameraY);
+        if (this.camera.follow === true) {
+            if (this.camera.entity) {
+                const cameraX = clamp(this.cameraBounding.leftX, this.bounding.leftX, this.bounding.rightX - this.canvas.width);
+                const cameraY = clamp(this.cameraBounding.topY, this.bounding.topY, this.bounding.bottomY - this.canvas.height);
+                this.context.translate(-cameraX, -cameraY);
+            } else {
+                console.error('nothing to follow');
+            }
+        }
     }
     clearCanvas() {
         this.context.setTransform(1, 0, 0, 1, 0, 0);
