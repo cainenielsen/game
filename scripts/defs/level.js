@@ -18,6 +18,8 @@ class Level extends Index {
         this.running = true;
         this.entries = [];
         this.tiles = [];
+        this.fps = 60;
+        this.then = 0;
         this.zoomSelection = this.zoomOptions['small'];
         this.config = {
             gridSize: Math.floor(screen.width / this.zoomSelection),
@@ -30,6 +32,9 @@ class Level extends Index {
         this.config.canvasHeight = this.config.gridHeight * this.config.gridSize,
             this.config.startingPosition = { x: startingPosition.x * this.config.gridSize, y: startingPosition.y * this.config.gridSize };
         this.loadTiles();
+    }
+    get fpsInterval() {
+        return 1000 / this.fps;
     }
     get bounding() {
         return {
@@ -50,8 +55,8 @@ class Level extends Index {
     get tilesOnScreen() {
         this.tiles = this.tiles.filter((tile) => tile);
         return this.tiles.filter((tile) => {
-            return isBetween(this.cameraBounding.leftX / this.config.gridSize, this.cameraBounding.rightX / this.config.gridSize, tile.x) &&
-            isBetween(this.cameraBounding.topY / this.config.gridSize, this.cameraBounding.bottomY / this.config.gridSize, tile.y);
+            return isBetween((this.cameraBounding.leftX / this.config.gridSize) - (this.canvas.width / 2), (this.cameraBounding.rightX / this.config.gridSize) + (this.canvas.width / 2), tile.x) &&
+                isBetween((this.cameraBounding.topY / this.config.gridSize) - (this.canvas.height / 2), (this.cameraBounding.bottomY / this.config.gridSize) + (this.canvas.height / 2), tile.y);
         })
     }
     async loadTiles() {
@@ -66,7 +71,7 @@ class Level extends Index {
     renderTiles() {
         this.entries.forEach((entry) => entry.draw());
     }
-    createEntries(){
+    createEntries() {
         this.tilesOnScreen.forEach((tile) => {
             const entriesMatchingTile = this.entries.filter((entry) => entry.gridBounding.leftX === tile.x && entry.gridBounding.topY === tile.y);
             if (entriesMatchingTile.length < 1) {
@@ -99,17 +104,24 @@ class Level extends Index {
         window.cancelAnimationFrame(this.currentFrame);
     }
     render(timestamp) {
-        this.setupCanvas();
-        this.clearCanvas();
-        this.handleCamera();
-        this.createEntries();
-        this.renderTiles();
-        this.cleanupEntries();
+        if (timestamp > this.then + this.fpsInterval) {
+            this.then = timestamp;
+
+            this.setupCanvas();
+            this.clearCanvas();
+            this.handleCamera();
+            this.createEntries();
+            this.renderTiles();
+            this.cleanupEntries();
+
+            // dispatch re-render event
+            let renderEvent = new CustomEvent('render', { detail: { timestamp } });
+            document.dispatchEvent(renderEvent);
+        }
 
         // dispatch re-render event
-        let renderEvent = new CustomEvent('render', { detail: { timestamp } });
-        document.dispatchEvent(renderEvent);
-
+        let animateEvent = new CustomEvent('animate', { detail: { timestamp } });
+        document.dispatchEvent(animateEvent);
         // request next animation frame
         this.currentFrame = window.requestAnimationFrame((e) => this.render(e));
     }

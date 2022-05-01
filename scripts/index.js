@@ -19,12 +19,12 @@ const detectCollision = (rec1, rec2) => {
 };
 
 // https://stackoverflow.com/questions/29861096/detect-which-side-of-a-rectangle-is-colliding-with-another-rectangle
-function detectCollision2(rec1, rec2) {
-    const xDistance = (rec1.bounding.leftX + rec1.dimensions.width / 2) - (rec2.bounding.leftX + rec2.dimensions.width / 2);
-    const yDistance = (rec1.bounding.topY + rec1.dimensions.height / 2) - (rec2.bounding.topY + rec2.dimensions.height / 2);
+function detectCollision2(bounding1, dimensions1, bounding2, dimensions2) {
+    const xDistance = (bounding1.leftX + dimensions1.width / 2) - (bounding2.leftX + dimensions2.width / 2);
+    const yDistance = (bounding1.topY + dimensions1.height / 2) - (bounding2.topY + dimensions2.height / 2);
 
-    const width = (rec1.dimensions.width + rec2.dimensions.width) / 2;
-    const height = (rec1.dimensions.height + rec2.dimensions.height) / 2;
+    const width = (dimensions1.width + dimensions2.width) / 2;
+    const height = (dimensions1.height + dimensions2.height) / 2;
 
     const crossWidth = width * yDistance;
     const crossHeight = height * xDistance;

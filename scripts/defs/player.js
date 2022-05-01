@@ -9,13 +9,14 @@ class Player extends Character {
         this.watch();
     }
     draw(e) {
+        // if(this.bottomImpacts.length > 0) {
+        //     level1.context.fillStyle = 'yellow';
+        // } else {
+        //     level1.context.fillStyle = 'purple';
+        // }
+        // level1.context.fillRect(this.impactBounding.leftX, this.impactBounding.topY, this.impactDimensions.width, this.impactDimensions.height);
         level1.context.fillStyle = 'red';
         level1.context.fillRect(this.bounding.leftX, this.bounding.topY, this.dimensions.width, this.dimensions.height);
-        this.lastTime = 0;
-        const fps = 1 / ( (performance.now() - e.detail.timestamp) / 1000 );
-        this.lastTime = e.timestamp;
-        level1.context.fillStyle = 'white';
-        level1.context.fillText(Math.trunc(fps), this.bounding.leftX + 10, this.bounding.topY + 10);
     }
     watch() {
         document.addEventListener('render', (e) => {
@@ -33,13 +34,12 @@ class Player extends Character {
                 this.velocity.horizontal++;
             }
         }
-        this.move({ x: this.friction });
     }
     handleJump() {
         if (this.movement.jump && this.jumping === false) {
             if (this.velocity.vertical === 0) {
                 this.jumping = true;
-                this.velocity.vertical = -80;
+                this.velocity.vertical = -20;
             }
         }
     };
