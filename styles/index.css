@@ -158,15 +158,15 @@ canvas {
 }
 
 #dirt {
-  background-image: url("/assets/dirt.png");
+  background-image: url('/assets/norzeteus-space-1-18-2/assets/minecraft/textures/block/dirt.png');
 }
 
 #space {
-  background-image: url("/assets/space-tile.jpg");
+  background-image: url('/assets/norzeteus-space-1-18-2/assets/minecraft/textures/block/iron_block2.png');
 }
 
 #andesite {
-  background-image: url("/assets/norzeteus-space-1-18-2/assets/minecraft/textures/block/andesite.png");
+  background-image: url('/assets/norzeteus-space-1-18-2/assets/minecraft/textures/block/andesite.png');
 }
 
 #copybutton {

@@ -5,10 +5,6 @@ class Level extends Index {
         this.canvas.id = name;
         this.canvas.style.left = '0px';
         this.canvas.style.top = '0px';
-        // this.canvas.style.height = '100%';
-        // this.canvas.style.width = '100%';
-        // this.canvas.width = window.innerWidth;
-        // this.canvas.height = window.innerHeight;
         this.zoomOptions = {
             small: 48,
             medium: 32,
@@ -57,10 +53,11 @@ class Level extends Index {
         }
     }
     get tilesOnScreen() {
-        this.tiles = this.tiles.filter((tile) => tile);
         return this.tiles.filter((tile) => {
-            return isBetween((this.cameraBounding.leftX / this.config.gridSize) - (this.canvas.width / 2), (this.cameraBounding.rightX / this.config.gridSize) + (this.canvas.width / 2), tile.x) &&
-                isBetween((this.cameraBounding.topY / this.config.gridSize) - (this.canvas.height / 2), (this.cameraBounding.bottomY / this.config.gridSize) + (this.canvas.height / 2), tile.y);
+            return isBetween((this.cameraBounding.leftX / this.config.gridSize) - ((this.canvas.width / this.config.gridSize) / 2),
+            (this.cameraBounding.rightX / this.config.gridSize) + ((this.canvas.width / this.config.gridSize) / 2), tile.x) &&
+                isBetween((this.cameraBounding.topY / this.config.gridSize) - ((this.canvas.height / this.config.gridSize) / 2),
+                (this.cameraBounding.bottomY / this.config.gridSize) + ((this.canvas.height / this.config.gridSize) / 2), tile.y);
         })
     }
     follow(entity) {
@@ -69,6 +66,7 @@ class Level extends Index {
                 entity,
                 follow: true
             };
+            console.log(`now following entity: ${this.camera.entity.id}`);
         } else {
             console.error('cannot follow non-entity object');
         }
@@ -81,6 +79,7 @@ class Level extends Index {
         data.forEach((tile) => {
             this.tiles.push(tile);
         });
+        console.log(`Loaded ${this.tiles.length} tiles`);
     }
     renderTiles() {
         this.entries.forEach((entry) => entry.draw());
@@ -89,15 +88,17 @@ class Level extends Index {
         this.characters.forEach((character) => character.animate());
     }
     createEntries() {
+        // console.log(`${this.tilesOnScreen.length} tiles on screen`);
         this.tilesOnScreen.forEach((tile) => {
             const entriesMatchingTile = this.entries.filter((entry) => entry.gridBounding.leftX === tile.x && entry.gridBounding.topY === tile.y);
             if (entriesMatchingTile.length < 1) {
-                level1.entries.push(new Tile({ setPosition: { x: tile.x, y: tile.y, useGrid: true }, texture: tile.texture }));
+                this.entries.push(new Tile({ setPosition: { x: tile.x, y: tile.y, useGrid: true }, texture: tile.texture }));
             }
         });
     }
     cleanupEntries() {
         this.entries = this.entries.filter((entry) => entry);
+        // console.log(`${this.entries.length} entries rendering`);
         this.entries.forEach((entry, index) => {
             const tilesOnSCreenMatchingEntry = this.tilesOnScreen.filter((tile) => tile.x === entry.gridBounding.leftX && tile.y === entry.gridBounding.topY);
             if (tilesOnSCreenMatchingEntry.length < 1) {

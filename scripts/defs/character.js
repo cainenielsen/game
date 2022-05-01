@@ -4,7 +4,6 @@ class Character extends Entity {
         this.maxSpeed = maxSpeed;
         this.jumping = false;
         this.collisions = [];
-        this.impacts = [];
         this.velocity = {
             vertical: 0,
             horizontal: 0
@@ -23,18 +22,6 @@ class Character extends Entity {
     get bottomCollisions() {
         return this.collisions.filter((collision) => collision.side === 'bottom');
     }
-    get leftImpacts() {
-        return this.impacts.filter((collision) => collision.side === 'left' && collision.tile.bounding.topY < this.bounding.bottomY);
-    }
-    get rightImpacts() {
-        return this.impacts.filter((collision) => collision.side === 'right' && collision.tile.bounding.topY < this.bounding.bottomY);
-    }
-    get topImpacts() {
-        return this.impacts.filter((collision) => collision.side === 'top');
-    }
-    get bottomImpacts() {
-        return this.impacts.filter((collision) => collision.side === 'bottom');
-    }
     get isOnTile() {
         return this.bottomCollisions.length > 0;
     }
@@ -50,21 +37,9 @@ class Character extends Entity {
     get isRightCollided() {
         return this.rightCollisions.length > 0;
     }
-    get impactBounding() {
-        return {
-            leftX: this.bounding.leftX - Math.abs(this.velocity.horizontal),
-            rightX: this.bounding.rightX + Math.abs(this.velocity.horizontal),
-            topY: this.bounding.topY - Math.abs(this.velocity.vertical),
-            bottomY: this.bounding.bottomY + Math.abs(this.velocity.vertical)
-        }
-    }
-    get impactDimensions() {
-        return {
-            height: this.dimensions.height + (Math.abs(this.velocity.vertical) * 2),
-            width: this.dimensions.width + (Math.abs(this.velocity.horizontal) * 2)
-        }
-    }
     init() {
+        // we should move this stuff to a callable function that is run by the level
+        // get rid of the event listener
         document.addEventListener('render', (e) => {
             this.handleMomentum(e);
             this.handleGravity(e);
@@ -72,11 +47,10 @@ class Character extends Entity {
             this.highlightCollisions(e);
         }, false);
         document.addEventListener('animate', (e) => {
+            // might be able to move these to render soon
             this.handleStageLimits(e);
             this.gatherCollisions(e);
             this.enforceCollisions(e);
-            this.gatherImpacts(e);
-            this.enforceImpacts(e);
         }, false);
     }
     handleGravity() {
@@ -112,31 +86,6 @@ class Character extends Entity {
             this.setPosition({ x: this.rightCollisions[0].tile.bounding.leftX - this.dimensions.width });
         }
     }
-    enforceImpacts() {
-        if (this.bottomImpacts.length > 0) {
-            if (this.velocity.vertical > 0) {
-                this.setPosition({ y: this.bottomImpacts[0].tile.bounding.topY - this.dimensions.height });
-            }
-        }
-
-        if (this.topImpacts.length > 0) {
-            if (this.velocity.vertical < 0) {
-                this.setPosition({ y: this.topImpacts[0].tile.bounding.bottomY });
-            }
-        }
-
-        if (this.leftImpacts.length > 0) {
-            if (this.velocity.horizontal < 0) {
-                this.setPosition({ x: this.leftImpacts[0].tile.bounding.rightX });
-            }
-        }
-
-        if (this.rightImpacts.length > 0) {
-            if (this.velocity.horizontal > 0) {
-                this.setPosition({ x: this.rightImpacts[0].tile.bounding.leftX - this.dimensions.width });
-            }
-        }
-    }
     gatherCollisions() {
         level1.entries.forEach((tile) => {
             const collide = detectCollision2(tile.bounding, tile.dimensions, this.bounding, this.dimensions)
@@ -149,18 +98,6 @@ class Character extends Entity {
             }
         });
     };
-    gatherImpacts() {
-        level1.entries.forEach((tile) => {
-            const collide = detectCollision2(tile.bounding, tile.dimensions, this.impactBounding, this.impactDimensions)
-            if (collide !== 'none') {
-                if (!this.impacts.find((collision) => collision.tile.id === tile.id)) {
-                    this.impacts.push({ tile, side: collide });
-                }
-            } else {
-                this.impacts = this.impacts.filter((collision) => collision.tile.id !== tile.id);
-            }
-        });
-    }
     handleStageLimits() {
         if (!detectContaining(this, level1)) {
             if (this.bounding.leftX < level1.bounding.leftX) {
