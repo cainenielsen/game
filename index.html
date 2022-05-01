@@ -1,6 +1,7 @@
 <html>
     <head>
         <link rel="stylesheet" href="styles/index.css">
+        <script src="https://kit.fontawesome.com/6564cd73e2.js" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js" integrity="sha512-UNM1njAgOFUa74Z0bADwAq8gbTcqZC8Ej4xPSzpnh0l6KMevwvkBvbldF9uR++qKeJ+MOZHRjV1HZjoRvjDfNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script defer src="scripts/index.js"></script>
         <script defer src="scripts/defs/index.js"></script>
@@ -14,15 +15,22 @@
         <script defer src="scripts/game.js"></script>
     </head>
     <body>
-        <div>
+        <div id="main-menu" class="modal">
+            <div></div>
             <h1>Super Game</h1>
             <button id="start">start</button>
         </div>
         <nav>
-            <button id="toggle">toggle</button>
-            <button id="dirt">dirt</button>
-            <button id="space">space</button>
-            <button id="andesite">andesite</button>
+            <div id="build-menu">
+                <div class="block-button" id="dirt"></div>
+                <div class="block-button" id="space"></div>
+                <div class="block-button" id="andesite"></div>
+                <div></div>
+                <i class="fa-solid fa-file-arrow-down" id="copybutton"></i>
+            </div>
         </nav>
+        <div id="dot-button" class="dot"><i class="fa-solid fa-bars"></i></div>
+        <div id="menu" class="modal"><div class="modal-menu"><div>menu</div><i class="fa-solid fa-xmark" id="menu-close"></i></div><div>test</div></div>
+        <div id="overlay"></div>
     </body>
 </html>

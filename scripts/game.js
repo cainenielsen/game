@@ -4,30 +4,59 @@ const level1 = new Level({ name: 'level_one', gridDisplay: false, startingPositi
 
 myGame.levels.push(level1);
 
-const startButton = document.getElementById("start");
-startButton.addEventListener("click", () => myGame.start());
-
-const toggleButton = document.getElementById("toggle");
-toggleButton.addEventListener("click", () => level1.toggle());
-
 let selectedTile = 'dirt';
 
 const dirtButton = document.getElementById("dirt");
 dirtButton.addEventListener("click", () => {
     selectedTile = 'dirt';
-    console.log(selectedTile);
+    andesiteButton.style.transform = "scale(1)";
+    dirtButton.style.transform = "scale(1.3)";
+    spaceButton.style.transform = "scale(1)";
 });
 
 const spaceButton = document.getElementById("space");
 spaceButton.addEventListener("click", () => {
     selectedTile = 'space';
-    console.log(selectedTile);
+    andesiteButton.style.transform = "scale(1)";
+    dirtButton.style.transform = "scale(1)";
+    spaceButton.style.transform = "scale(1.3)";
 });
 
 const andesiteButton = document.getElementById("andesite");
 andesiteButton.addEventListener("click", () => {
     selectedTile = 'andesite';
-    console.log(selectedTile);
+    andesiteButton.style.transform = "scale(1.3)";
+    dirtButton.style.transform = "scale(1)";
+    spaceButton.style.transform = "scale(1)";
+});
+
+dirtButton.style.transform = "scale(1.3)";
+
+const menu = document.getElementById("menu");
+const menuClose = document.getElementById("menu-close");
+const overlay = document.getElementById("overlay");
+const buildMenu = document.getElementById("build-menu");
+menu.style.display = "none";
+overlay.style.display = "none";
+
+const dotButton = document.getElementById("dot-button");
+dotButton.addEventListener("click", () => {
+    menu.style.display = "grid";
+    overlay.style.display = "block";
+    level1.toggle();
+});
+
+menuClose.addEventListener("click", () => {
+    menu.style.display = "none";
+    overlay.style.display = "none";
+    level1.toggle();
+});
+
+const startButton = document.getElementById("start");
+startButton.addEventListener("click", () => {
+    dotButton.style.display = "grid";
+    buildMenu.style.display = "inline-grid";
+    myGame.start()
 });
 
 const drawTile = (xPos, yPos) => {
@@ -75,4 +104,17 @@ level1.canvas.addEventListener("contextmenu", e => e.preventDefault());
 
 const somePlayer = new Player({ setPosition: { x: 2, y: 12, useGrid: true }, height: 4, width: 2 });
 
+level1.characters.push(somePlayer);
+
 level1.follow(somePlayer);
+
+const copyToClipBoard = async () => {
+    if (navigator.clipboard) {
+        await navigator.clipboard.writeText(JSON.stringify(level1.tiles));
+    }
+}
+
+const copybutton = document.getElementById("copybutton");
+copybutton.addEventListener("click", () => {
+    copyToClipBoard();
+}, false)

@@ -6,24 +6,12 @@ class Player extends Character {
             right: false,
             jump: false,
         };
-        this.watch();
     }
-    draw(e) {
-        // if(this.bottomImpacts.length > 0) {
-        //     level1.context.fillStyle = 'yellow';
-        // } else {
-        //     level1.context.fillStyle = 'purple';
-        // }
-        // level1.context.fillRect(this.impactBounding.leftX, this.impactBounding.topY, this.impactDimensions.width, this.impactDimensions.height);
+    animate(e) {
+        this.handleWalk(e);
+        this.handleJump(e);
         level1.context.fillStyle = 'red';
         level1.context.fillRect(this.bounding.leftX, this.bounding.topY, this.dimensions.width, this.dimensions.height);
-    }
-    watch() {
-        document.addEventListener('render', (e) => {
-            this.handleWalk(e);
-            this.handleJump(e);
-            this.draw(e);
-        }, false);
     }
     handleWalk(e) {
         if (Math.abs(this.velocity.horizontal) < this.maxSpeed) {

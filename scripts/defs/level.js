@@ -86,7 +86,7 @@ class Level extends Index {
         this.entries.forEach((entry) => entry.draw());
     }
     renderCharacters() {
-        this.characters.forEach((character) => character.draw());
+        this.characters.forEach((character) => character.animate());
     }
     createEntries() {
         this.tilesOnScreen.forEach((tile) => {
@@ -129,8 +129,8 @@ class Level extends Index {
             this.handleCamera();
             this.createEntries();
             this.renderTiles();
-            this.renderCharacters();
             this.cleanupEntries();
+            this.renderCharacters();
 
             // dispatch re-render event
             let renderEvent = new CustomEvent('render', { detail: { timestamp } });

@@ -1,6 +1,9 @@
 body {
   margin: 0px;
   overflow: hidden;
+  font-size: 24px;
+  font-family: sans-serif;
+  background-image: url("../assets/seamless-space-backgrounds/1024x1024/blue-nebula/4.png");
 }
 
 #level_one {
@@ -10,28 +13,35 @@ body {
 
 nav {
   position: fixed;
-  background-color: rgba(0, 0, 0, 0.25);
   width: 100%;
-  height: 64px;
-  top: 0px;
+  height: max(4vw, 64px);
+  bottom: max(2vw, 32px);
   left: 0px;
   z-index: 1;
-  display: grid;
-  grid-template-columns: min-content min-content min-content min-content;
-  grid-gap: 8px;
-  padding-left: 32px;
-  align-items: center;
+  text-align: center;
 }
 
-div {
-  max-width: 75ch;
-  margin: auto;
-  height: 50vh;
-  transform: translateY(50%);
+#build-menu {
   background-color: rgba(0, 0, 0, 0.25);
-  box-sizing: border-box;
+  display: none;
+  height: 100%;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  align-items: center;
+  background-color: white;
+  opacity: 0.5;
+  transition: opacity 0.5s;
+  border-radius: calc(max(4vw, 64px) / 2);
+  padding-left: calc(max(4vw, 64px) / 2);
+  padding-right: calc(max(4vw, 64px) / 2);
+  font-size: calc(max(4vw, 64px) / 2);
+}
+
+#build-menu:hover {
+  opacity: 1;
+}
+
+#main-menu {
   text-align: center;
-  padding: 20px;
 }
 
 button {
@@ -56,4 +66,109 @@ canvas {
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-optimize-contrast;
   -ms-interpolation-mode: nearest-neighbor;
+}
+
+.dot {
+  height: max(4vw, 64px);
+  border-radius: 50%;
+  aspect-ratio: 1/1;
+  background-color: white;
+  position: fixed;
+  bottom: max(2vw, 32px);
+  right: max(2vw, 32px);
+  z-index: 1;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 0px 10px 5px, rgba(255, 255, 255, 0.25) 0px 0px 25px 5px;
+  text-align: center;
+  display: none;
+  align-items: center;
+  font-size: max(1vw, 32px);
+  transition: transform 0.5s, opacity 0.5s;
+  opacity: 0.5;
+}
+
+.dot:hover {
+  cursor: pointer;
+  transform: scale(1.1);
+  opacity: 1;
+}
+
+.modal {
+  width: 70ch;
+  height: 50vh;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  grid-template-rows: 48px auto;
+  grid-row-gap: 16px;
+  background-color: white;
+  border-radius: 32px;
+  box-sizing: border-box;
+  padding: 32px;
+}
+
+.modal-menu {
+  font-size: 48px;
+  display: grid;
+  grid-template-columns: 1fr 48px;
+  align-items: center;
+  /* justify-items: center; */
+  height: 100%;
+}
+
+#overlay {
+  z-index: 1;
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(0, 0, 0, 0.5);
+  top: 0px;
+  left: 0px;
+  backdrop-filter: blur(5px);
+}
+
+#menu {
+  z-index: 2;
+}
+
+#menu-close:hover {
+  cursor: pointer;
+}
+
+.fa-xmark:before {
+  aspect-ratio: 1/1;
+  width: 100%;
+  display: inline-block;
+  text-align: center;
+}
+
+.block-button {
+  height: 50%;
+  aspect-ratio: 1/1;
+  margin-left: 8px;
+  margin-right: 8px;
+  background-size: contain;
+  transition: transform 0.5s;
+}
+
+.block-button:hover {
+  cursor: pointer;
+  transform: scale(1.1);
+}
+
+#dirt {
+  background-image: url("/assets/dirt.png");
+}
+
+#space {
+  background-image: url("/assets/space-tile.jpg");
+}
+
+#andesite {
+  background-image: url("/assets/norzeteus-space-1-18-2/assets/minecraft/textures/block/andesite.png");
+}
+
+#copybutton {
+  cursor: pointer;
 }
