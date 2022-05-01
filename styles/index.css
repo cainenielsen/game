@@ -17,7 +17,7 @@ nav {
   left: 0px;
   z-index: 1;
   display: grid;
-  grid-template-columns: min-content min-content min-content;
+  grid-template-columns: min-content min-content min-content min-content;
   grid-gap: 8px;
   padding-left: 32px;
   align-items: center;

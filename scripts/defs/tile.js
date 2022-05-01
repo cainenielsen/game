@@ -7,7 +7,8 @@ class Texture {
 
 const textures = {
     dirt: new Texture('assets/dirt.png'),
-    space: new Texture('assets/space-tile.jpg')
+    space: new Texture('assets/space-tile.jpg'),
+    andesite: new Texture('assets/norzeteus-space-1-18-2/assets/minecraft/textures/block/andesite.png')
 };
 
 class Tile extends Entry {

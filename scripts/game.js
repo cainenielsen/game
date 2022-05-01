@@ -24,6 +24,12 @@ spaceButton.addEventListener("click", () => {
     console.log(selectedTile);
 });
 
+const andesiteButton = document.getElementById("andesite");
+andesiteButton.addEventListener("click", () => {
+    selectedTile = 'andesite';
+    console.log(selectedTile);
+});
+
 const drawTile = (xPos, yPos) => {
     level1.tiles.push({
         x: xPos,
