@@ -5,7 +5,6 @@ body {
 
 #level_one {
   background-image: url("../assets/seamless-space-backgrounds/1024x1024/blue-nebula/8.png");
-  background-size: cover;
   position: fixed;
 }
 
