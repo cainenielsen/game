@@ -1,13 +1,16 @@
-class Entity extends Index {
+import Index from './index.js';
+
+export default class Entity extends Index {
     #position = {
         topY: 0,
         leftX: 0,
     }
-    constructor({ height = 1, width = 1, setPosition: { x = 0, y = 0, useGrid = false } }) {
+    constructor({ height = 1, width = 1, setPosition: { x = 0, y = 0, useGrid = false } }, level) {
         super();
+        this.level = level;
         this.dimensions = {
-            height: height * level1.config.gridSize,
-            width: width * level1.config.gridSize
+            height: height * this.level.config.gridSize,
+            width: width * this.level.config.gridSize
         }
         this.setPosition({ x, y, useGrid });
     }
@@ -27,10 +30,10 @@ class Entity extends Index {
     }
     get gridBounding() {
         return {
-            topY: this.bounding.topY / level1.config.gridSize,
-            bottomY: this.bounding.bottomY / level1.config.gridSize,
-            leftX: this.bounding.leftX / level1.config.gridSize,
-            rightX: this.bounding.rightX / level1.config.gridSize,
+            topY: this.bounding.topY / this.level.config.gridSize,
+            bottomY: this.bounding.bottomY / this.level.config.gridSize,
+            leftX: this.bounding.leftX / this.level.config.gridSize,
+            rightX: this.bounding.rightX / this.level.config.gridSize,
         }
     }
     get centerPosition() {
@@ -40,12 +43,12 @@ class Entity extends Index {
         }
     }
     setPosition({ x = this.bounding.leftX, y = this.bounding.topY, useGrid = false }) {
-        this.#position.leftX = useGrid ? x * level1.config.gridSize : x;
-        this.#position.topY = useGrid ? y * level1.config.gridSize : y;
+        this.#position.leftX = useGrid ? x * this.level.config.gridSize : x;
+        this.#position.topY = useGrid ? y * this.level.config.gridSize : y;
     }
     move({ x = 0, y = 0, useGrid = false }) {
-        const xToMove = useGrid ? x * level1.config.gridSize : x;
-        const yToMove = useGrid ? y * level1.config.gridSize : y;
+        const xToMove = useGrid ? x * this.level.config.gridSize : x;
+        const yToMove = useGrid ? y * this.level.config.gridSize : y;
         const newXPosition = this.bounding.leftX + xToMove;
         const newYPosition = this.bounding.topY + yToMove;
         this.setPosition({ x: newXPosition, y: newYPosition, useGrid: false });

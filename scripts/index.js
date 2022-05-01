@@ -1,56 +1,32 @@
-const detectContaining = (containing, container) => {
-    if (containing.bounding.leftX >= container.bounding.leftX &&
-        containing.bounding.rightX <= container.bounding.rightX &&
-        containing.bounding.topY >= container.bounding.topY &&
-        containing.bounding.bottomY <= container.bounding.bottomY) {
-        return true;
-    }
-    return false;
-}
+import { Game, Level, Player, keyboardModule, mouseModule } from './engine/index.js';
+import { mouseHandler, keyDownHandler, keyUpHandler, keyPressHandler } from './controls.js';
+import setupInterface from './interface.js';
 
-const detectCollision = (rec1, rec2) => {
-    if (rec1.bounding.leftX <= rec2.bounding.rightX && // if 1 left is less than 2 right
-        rec1.bounding.rightX >= rec2.bounding.leftX && // if 1 right is more than 2 left
-        rec1.bounding.topY <= rec2.bounding.bottomY && // if 1 top is less than 2 bottom
-        rec1.bounding.bottomY >= rec2.bounding.topY) { // if 1 bottom is more than 2 top
-        return true;
-    }
-    return false;
-};
+const superGame = new Game();
 
-// https://stackoverflow.com/questions/29861096/detect-which-side-of-a-rectangle-is-colliding-with-another-rectangle
-function detectCollision2(bounding1, dimensions1, bounding2, dimensions2) {
-    const xDistance = (bounding1.leftX + dimensions1.width / 2) - (bounding2.leftX + dimensions2.width / 2);
-    const yDistance = (bounding1.topY + dimensions1.height / 2) - (bounding2.topY + dimensions2.height / 2);
+const level1 = new Level({
+    name: 'level_one',
+    gridDisplay: false,
+    startingPosition: { x: 2, y: 12 }
+});
 
-    const width = (dimensions1.width + dimensions2.width) / 2;
-    const height = (dimensions1.height + dimensions2.height) / 2;
+superGame.addLevel(level1);
 
-    const crossWidth = width * yDistance;
-    const crossHeight = height * xDistance;
+const somePlayer = new Player({
+    setPosition: { x: 2, y: 12, useGrid: true },
+    height: 4,
+    width: 2.
+}, level1);
 
-    let collision = 'none';
+mouseModule(level1, somePlayer, mouseHandler);
 
-    if (Math.abs(xDistance) <= width && Math.abs(yDistance) <= height) {
-        if (crossWidth > crossHeight) {
-            collision = (crossWidth > (-crossHeight)) ? 'bottom' : 'left';
-        } else {
-            collision = (crossWidth > - (crossHeight)) ? 'right' : 'top';
-        }
-    }
+keyboardModule(level1, somePlayer, {
+    keyDownHandler,
+    keyUpHandler,
+    keyPressHandler
+});
 
-    return (collision);
-}
+level1.addCharacter(somePlayer);
+level1.follow(somePlayer);
 
-const isBetween = (num1, num2, value) => value > num1 && value < num2;
-
-const repeat = (func, times) => {
-    func(times);
-    times && --times && repeat(func, times);
-}
-
-const clamp = (value, min, max) => {
-    if(value < min) return min;
-    else if(value > max) return max;
-    return value;
-}
+setupInterface(superGame, level1, somePlayer);

@@ -1,4 +1,7 @@
-class Game extends Index {
+import Index from './index.js';
+import Level from './level.js';
+
+export default class Game extends Index {
     constructor() {
         super();
         this.levels = [];
@@ -6,6 +9,13 @@ class Game extends Index {
     }
     start() {
         this.selectLevel(0);
+    }
+    addLevel(level) {
+        if (level instanceof Level ) {
+            this.levels.push(level);
+        } else {
+            throw new Error('cannot add non-level object as level');
+        }
     }
     selectLevel(selection) {
         const selectedId = this.selectedLevel?.id;

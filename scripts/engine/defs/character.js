@@ -1,6 +1,12 @@
-class Character extends Entity {
-    constructor({ height, width, setPosition, maxSpeed = 7.5 }) {
-        super({ height, width, setPosition });
+// classes
+import Entity from './entity.js';
+// utils
+import detectContaining from '../utils/detectContaining.js';
+import { detectCollision2 } from '../utils/detectCollision.js';
+
+export default class Character extends Entity {
+    constructor({ height, width, setPosition, maxSpeed = 7.5 }, level) {
+        super({ height, width, setPosition }, level);
         this.maxSpeed = maxSpeed;
         this.jumping = false;
         this.collisions = [];
@@ -29,7 +35,7 @@ class Character extends Entity {
         return this.topCollisions.length > 0;
     }
     get isInCanvas() {
-        return this.bounding.bottomY < level1.canvas.height;
+        return this.bounding.bottomY < this.level.canvas.height;
     }
     get isLeftCollided() {
         return this.leftCollisions.length > 0;
@@ -87,7 +93,7 @@ class Character extends Entity {
         }
     }
     gatherCollisions() {
-        level1.entries.forEach((tile) => {
+        this.level.entries.forEach((tile) => {
             const collide = detectCollision2(tile.bounding, tile.dimensions, this.bounding, this.dimensions)
             if (collide !== 'none') {
                 if (!this.collisions.find((collision) => collision.tile.id === tile.id)) {
@@ -99,23 +105,23 @@ class Character extends Entity {
         });
     };
     handleStageLimits() {
-        if (!detectContaining(this, level1)) {
-            if (this.bounding.leftX < level1.bounding.leftX) {
+        if (!detectContaining(this, this.level)) {
+            if (this.bounding.leftX < this.level.bounding.leftX) {
                 this.velocity.horizontal = 0;
-                this.setPosition({ x: level1.bounding.leftX });
+                this.setPosition({ x: this.level.bounding.leftX });
             }
-            if (this.bounding.rightX > level1.bounding.rightX) {
+            if (this.bounding.rightX > this.level.bounding.rightX) {
                 this.velocity.horizontal = 0;
-                this.setPosition({ x: level1.bounding.rightX - this.dimensions.width });
+                this.setPosition({ x: this.level.bounding.rightX - this.dimensions.width });
             }
-            if (this.bounding.topY < level1.bounding.topY) {
+            if (this.bounding.topY < this.level.bounding.topY) {
                 this.velocity.vertical = 0;
-                this.setPosition({ y: level1.bounding.topY });
+                this.setPosition({ y: this.level.bounding.topY });
             }
-            if (this.bounding.bottomY > level1.bounding.bottomY) {
+            if (this.bounding.bottomY > this.level.bounding.bottomY) {
                 this.velocity.vertical = 0;
                 this.velocity.horizontal = 0;
-                this.setPosition({ x: level1.config.startingPosition.x, y: level1.config.startingPosition.y });
+                this.setPosition({ x: this.level.config.startingPosition.x, y: this.level.config.startingPosition.y });
             }
         }
     };
@@ -127,11 +133,11 @@ class Character extends Entity {
         }
     };
     highlightCollisions() {
-        if (level1.config.highlightCollisions === true) {
+        if (this.level.config.highlightCollisions === true) {
             this.collisions.forEach((col) => {
-                const collidedTile = level1.entries.find((tile) => tile.id === col.tile.id);
-                level1.context.fillStyle = 'pink';
-                level1.context.fillRect(collidedTile.bounding.leftX, collidedTile.bounding.topY, collidedTile.dimensions.height, collidedTile.dimensions.width);
+                const collidedTile = this.level.entries.find((tile) => tile.id === col.tile.id);
+                this.level.context.fillStyle = 'pink';
+                this.level.context.fillRect(collidedTile.bounding.leftX, collidedTile.bounding.topY, collidedTile.dimensions.height, collidedTile.dimensions.width);
             });
         }
     }

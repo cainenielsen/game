@@ -1,8 +1,21 @@
-class Level extends Index {
+// classes
+import Index from './index.js';
+import Tile from './tile.js';
+import Character from './character.js';
+import Entity from './entity.js';
+// utils
+import { clamp, isBetween } from '../utils/helpers.js';
+
+export default class Level extends Index {
     constructor({ name = 'level', gridDisplay = false, highlightCollisions = false, startingPosition = { x: 0, y: 0 } }) {
         super();
         this.canvas = document.createElement('canvas');
         this.canvas.id = name;
+        this.canvas.tabIndex = -1;
+        // if the player clicks out of the game, and clicks back the controls should still work
+        this.canvas.addEventListener('click', () => {
+            this.canvas.focus();
+        });
         this.canvas.style.left = '0px';
         this.canvas.style.top = '0px';
         this.zoomOptions = {
@@ -30,7 +43,7 @@ class Level extends Index {
         this.config.gridHeight = 128;
         this.config.canvasWidth = this.config.gridWidth * this.config.gridSize;
         this.config.canvasHeight = this.config.gridHeight * this.config.gridSize,
-            this.config.startingPosition = { x: startingPosition.x * this.config.gridSize, y: startingPosition.y * this.config.gridSize };
+        this.config.startingPosition = { x: startingPosition.x * this.config.gridSize, y: startingPosition.y * this.config.gridSize };
         this.loadTiles();
     }
     get fpsInterval() {
@@ -53,6 +66,8 @@ class Level extends Index {
         }
     }
     get tilesOnScreen() {
+        // required to clean up empty items in tiles after removing blocks with right click
+        this.tiles = this.tiles.filter((tile) => tile);
         return this.tiles.filter((tile) => {
             return isBetween((this.cameraBounding.leftX / this.config.gridSize) - ((this.canvas.width / this.config.gridSize) / 2),
             (this.cameraBounding.rightX / this.config.gridSize) + ((this.canvas.width / this.config.gridSize) / 2), tile.x) &&
@@ -66,7 +81,7 @@ class Level extends Index {
                 entity,
                 follow: true
             };
-            console.log(`now following entity: ${this.camera.entity.id}`);
+            console.log(`Camera following entity: ${this.camera.entity.id}`);
         } else {
             console.error('cannot follow non-entity object');
         }
@@ -92,7 +107,7 @@ class Level extends Index {
         this.tilesOnScreen.forEach((tile) => {
             const entriesMatchingTile = this.entries.filter((entry) => entry.gridBounding.leftX === tile.x && entry.gridBounding.topY === tile.y);
             if (entriesMatchingTile.length < 1) {
-                this.entries.push(new Tile({ setPosition: { x: tile.x, y: tile.y, useGrid: true }, texture: tile.texture }));
+                this.entries.push(new Tile({ setPosition: { x: tile.x, y: tile.y, useGrid: true }, texture: tile.texture }, this));
             }
         });
     }
@@ -114,12 +129,21 @@ class Level extends Index {
         this.play();
     };
     play() {
+        this.canvas.focus();
         this.running = true;
         this.currentFrame = window.requestAnimationFrame((e) => this.render(e));
     }
     pause() {
         this.running = false;
         window.cancelAnimationFrame(this.currentFrame);
+    }
+    addCharacter(character) {
+        if (character instanceof Character ) {
+            this.characters.push(character);
+            console.log(`Added new character: ${character.id}`);
+        } else {
+            throw new Error('cannot add non-character object as character');
+        }
     }
     render(timestamp) {
         if (timestamp > this.then + this.fpsInterval) {

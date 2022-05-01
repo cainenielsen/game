@@ -4,14 +4,14 @@ class KeyHandler {
         this.upCallback = upCallback;
         this.pressCallback = pressCallback;
     }
-    handleKeyDown = () => this.downCallback();
-    handleKeyUp = () => this.upCallback();
-    handleKeyPress = () => this.pressCallback();
+    handleKeyDown = (player) => this.downCallback(player);
+    handleKeyUp = (player) => this.upCallback(player);
+    handleKeyPress = (player) => this.pressCallback(player);
 }
 
 const handleUp = new KeyHandler(
-    () => somePlayer.movement.jump = true,
-    () => somePlayer.movement.jump = false
+    (player) => player.movement.jump = true,
+    (player) => player.movement.jump = false
 );
 
 const handleDown = new KeyHandler(
@@ -20,13 +20,13 @@ const handleDown = new KeyHandler(
 );
 
 const handleLeft = new KeyHandler(
-    () => somePlayer.movement.left = true,
-    () => somePlayer.movement.left = false
+    (player) => player.movement.left = true,
+    (player) => player.movement.left = false
 );
 
 const handleRight = new KeyHandler(
-    () => somePlayer.movement.right = true,
-    () => somePlayer.movement.right = false
+    (player) => player.movement.right = true,
+    (player) => player.movement.right = false
 );
 
 const keyCodes = {
@@ -41,28 +41,30 @@ const keyCodes = {
     Space: handleUp
 }
 
-const keyDownHandler = (event) => {
+
+
+const keyDownHandler = (event, player) => {
     if (event.defaultPrevented) {
         return; // Do nothing if the event was already processed
     }
 
     if (keyCodes[event.code]) {
         // console.log(event.key);
-        keyCodes[event.code].handleKeyDown();
+        keyCodes[event.code].handleKeyDown(player);
 
         // Cancel the default action to avoid it being handled twice
         event.preventDefault();
     }
 };
 
-const keyUpHandler = (event) => {
+const keyUpHandler = (event, player) => {
     if (event.defaultPrevented) {
         return; // Do nothing if the event was already processed
     }
 
     if (keyCodes[event.code]) {
         // console.log(event.key);
-        keyCodes[event.code].handleKeyUp();
+        keyCodes[event.code].handleKeyUp(player);
 
         // Cancel the default action to avoid it being handled twice
         event.preventDefault();
@@ -70,22 +72,63 @@ const keyUpHandler = (event) => {
 };
 
 // mainly used for typeable characters
-const keyPressHandler = (event) => {
+const keyPressHandler = (event, player) => {
     if (event.defaultPrevented) {
         return; // Do nothing if the event was already processed
     }
 
     if (keyCodes[event.code]) {
         // console.log(event.key);
-        keyCodes[event.code].handleKeyPress();
+        keyCodes[event.code].handleKeyPress(player);
 
         // Cancel the default action to avoid it being handled twice
         event.preventDefault();
     }
 };
 
-window.addEventListener("keydown", keyDownHandler, true);
-window.addEventListener("keyup", keyUpHandler, true);
-window.addEventListener("keypress", keyPressHandler, true);
-// the last option dispatches the event to the listener first,
-// then dispatches event to window
+// mouse controls
+
+const drawTile = (xPos, yPos, level, player) => {
+    level.tiles.push({
+        x: xPos,
+        y: yPos,
+        texture: player.selectedTile
+    });
+};
+
+const clearTile = (tileIndexMatchingPosition, level) => {
+    delete level.tiles[tileIndexMatchingPosition];
+}
+
+const mouseHandler = (event, level, player) => {
+    if (event.defaultPrevented) {
+        return; // Do nothing if the event was already processed
+    }
+    const currentMatrix = level.context.getTransform();
+    const translatedX = currentMatrix.e;
+    const translatedY = currentMatrix.f;
+    const elementRelativeX = event.clientX - translatedX;
+    const elementRelativeY = event.clientY - translatedY;
+    const xPos = Math.trunc(elementRelativeX / level.config.gridSize);
+    const yPos = Math.trunc(elementRelativeY / level.config.gridSize);
+    const tileIndexMatchingPosition = level.tiles.findIndex((tile) => tile.x === xPos && tile.y === yPos);
+    if (event.button === 0) {
+        event.preventDefault();
+        if (tileIndexMatchingPosition < 0) {
+            drawTile(xPos, yPos, level, player);
+        }
+    }
+    if (event.button === 2) {
+        event.preventDefault();
+        if (tileIndexMatchingPosition > -1) {
+            clearTile(tileIndexMatchingPosition, level);
+        }
+    }
+}
+
+export {
+    mouseHandler,
+    keyDownHandler,
+    keyUpHandler,
+    keyPressHandler
+}
