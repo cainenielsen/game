@@ -4,27 +4,30 @@ import Tile from './tile.js';
 import Character from './character.js';
 import Entity from './entity.js';
 import Player from './player.js';
+import Layer from './layer.js';
 // utils
 import { clamp, isBetween } from '../utils/helpers.js';
 
 export default class Level extends Index {
     constructor({ name = 'level', gridDisplay = false, highlightCollisions = false, startingPosition = { x: 0, y: 0 } }) {
         super();
-        this.canvas = document.createElement('canvas');
-        this.canvas.id = name;
-        this.canvas.tabIndex = -1;
+        this.name = name;
+        this.layers = {
+            characters: new Layer({ alpha: true }, this),
+            tiles: new Layer({ alpha: true }, this)
+        }
+        this.container = document.createElement('div');
+        this.container.id = this.id;
+        this.container.tabIndex = -1;
         // if the player clicks out of the game, and clicks back the controls should still work
-        this.canvas.addEventListener('click', () => {
-            this.canvas.focus();
+        this.container.addEventListener('click', () => {
+            this.container.focus();
         });
-        this.canvas.style.left = '0px';
-        this.canvas.style.top = '0px';
         this.zoomOptions = {
             small: 48,
             medium: 32,
             large: 24
         }
-        this.context = this.canvas.getContext("2d", { alpha: true });
         this.running = true;
         this.characters = [];
         this.entries = [];
@@ -60,20 +63,20 @@ export default class Level extends Index {
     }
     get cameraBounding() {
         return {
-            leftX: this.camera.entity.centerPosition.x - this.canvas.width / 2,
-            rightX: this.camera.entity.centerPosition.x + this.canvas.width / 2,
-            topY: this.camera.entity.centerPosition.y - this.canvas.height / 2,
-            bottomY: this.camera.entity.centerPosition.y + this.canvas.height / 2
+            leftX: this.camera.entity.centerPosition.x - window.innerWidth / 2,
+            rightX: this.camera.entity.centerPosition.x + window.innerWidth / 2,
+            topY: this.camera.entity.centerPosition.y - window.innerHeight / 2,
+            bottomY: this.camera.entity.centerPosition.y + window.innerHeight / 2
         }
     }
     get tilesOnScreen() {
         // required to clean up empty items in tiles after removing blocks with right click
         this.tiles = this.tiles.filter((tile) => tile);
         return this.tiles.filter((tile) => {
-            return isBetween((this.cameraBounding.leftX / this.config.gridSize) - ((this.canvas.width / this.config.gridSize) / 2),
-            (this.cameraBounding.rightX / this.config.gridSize) + ((this.canvas.width / this.config.gridSize) / 2), tile.x) &&
-                isBetween((this.cameraBounding.topY / this.config.gridSize) - ((this.canvas.height / this.config.gridSize) / 2),
-                (this.cameraBounding.bottomY / this.config.gridSize) + ((this.canvas.height / this.config.gridSize) / 2), tile.y);
+            return isBetween((this.cameraBounding.leftX / this.config.gridSize) - ((window.innerWidth / this.config.gridSize) / 2),
+            (this.cameraBounding.rightX / this.config.gridSize) + ((window.innerWidth / this.config.gridSize) / 2), tile.x) &&
+                isBetween((this.cameraBounding.topY / this.config.gridSize) - ((window.innerHeight / this.config.gridSize) / 2),
+                (this.cameraBounding.bottomY / this.config.gridSize) + ((window.innerHeight / this.config.gridSize) / 2), tile.y);
         })
     }
     follow(entity) {
@@ -136,11 +139,12 @@ export default class Level extends Index {
         this.running ? this.pause() : this.play();
     }
     init() {
-        document.body.appendChild(this.canvas);
+        document.body.appendChild(this.container);
+        this.layers.characters.place();
         this.play();
     };
     play() {
-        this.canvas.focus();
+        this.container.focus();
         this.running = true;
         this.currentFrame = window.requestAnimationFrame((e) => this.render(e));
     }
@@ -160,8 +164,9 @@ export default class Level extends Index {
         if (timestamp > this.then + this.fpsInterval) {
             this.then = timestamp;
 
-            this.setupCanvas();
-            this.clearCanvas();
+            this.setupCanvases();
+            this.setupGrid();
+            this.clearCanvases();
             this.handleCamera();
             this.createEntries();
             this.renderTiles();
@@ -172,40 +177,25 @@ export default class Level extends Index {
         // request next animation frame
         this.currentFrame = window.requestAnimationFrame((e) => this.render(e));
     }
-    setupCanvas() {
-        // See https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Optimizing_canvas#scaling_for_high_resolution_displays
-        // for more details
-
-        // Get the DPR and size of the canvas
-        const dpr = window.devicePixelRatio;
-
-        // Set the "actual" size of the canvas
-        this.canvas.width = window.innerWidth * dpr;
-        this.canvas.height = window.innerHeight * dpr;
-
-        // Scale the context to ensure correct drawing operations
-        this.context.scale(dpr, dpr);
-
-        // Set the "drawn" size of the canvas
-        this.canvas.style.width = window.innerWidth + 'px';
-        this.canvas.style.height = window.innerHeight + 'px';
-
+    setupCanvases() {
+        this.layers.characters.setup();
+    }
+    setupGrid() {
         // Set the grid size
         this.config.gridSize = Math.floor(screen.width / this.zoomOptions['small']);
     }
     handleCamera() {
         if (this.camera.follow === true) {
             if (this.camera.entity) {
-                const cameraX = clamp(this.cameraBounding.leftX, this.bounding.leftX, this.bounding.rightX - this.canvas.width);
-                const cameraY = clamp(this.cameraBounding.topY, this.bounding.topY, this.bounding.bottomY - this.canvas.height);
-                this.context.translate(-cameraX, -cameraY);
+                const cameraX = clamp(this.cameraBounding.leftX, this.bounding.leftX, this.bounding.rightX - window.innerWidth);
+                const cameraY = clamp(this.cameraBounding.topY, this.bounding.topY, this.bounding.bottomY - window.innerHeight);
+                this.layers.characters.context.translate(-cameraX, -cameraY);
             } else {
                 console.error('nothing to follow');
             }
         }
     }
-    clearCanvas() {
-        this.context.setTransform(1, 0, 0, 1, 0, 0);
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    clearCanvases() {
+        this.layers.characters.clear();
     };
 }

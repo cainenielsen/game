@@ -20,7 +20,7 @@ export default class Tile extends Entity {
         this.gridDisplay();
     }
     draw() {
-        this.level.context.drawImage(this.sprite.img, this.bounding.leftX, this.bounding.topY, this.level.config.gridSize, this.level.config.gridSize);
+        this.level.layers.characters.context.drawImage(this.sprite.img, this.bounding.leftX, this.bounding.topY, this.level.config.gridSize, this.level.config.gridSize);
     }
     gridDisplay() {
         if (this.level.config.gridDisplay) {
