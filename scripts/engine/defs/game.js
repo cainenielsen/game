@@ -21,12 +21,8 @@ export default class Game extends Index {
         const selectedId = this.selectedLevel?.id;
         if (selectedId != this.levels[selection].id ) {
             if (this.levels.length > 0) {
-                if (this.levels[selection].init) {
-                    this.selectedLevel = this.levels[selection];
-                    this.selectedLevel.init();
-                } else {
-                    alert('level cannot be initialized');
-                }
+                this.selectedLevel = this.levels[selection];
+                this.selectedLevel.init();
             } else {
                 alert('no levels to select');
             }
