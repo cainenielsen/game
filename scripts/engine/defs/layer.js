@@ -41,7 +41,7 @@ class Layer extends Index {
         this.canvas.style.width = windowWidth + 'px';
         this.canvas.style.height = windowHeight + 'px';
     }
-    clear () {
+    clear() {
         this.context.setTransform(1, 0, 0, 1, 0, 0);
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
