@@ -14,15 +14,15 @@ export default class Player extends Character {
     animate() {
         this.handleWalk();
         this.handleJump();
-        this.level.context.fillStyle = 'tan';
-        this.level.context.fillRect(this.bounding.leftX, this.bounding.topY, this.dimensions.width, this.dimensions.height);
+        this.level.layers.characters.context.fillStyle = 'tan';
+        this.level.layers.characters.context.fillRect(this.bounding.leftX, this.bounding.topY, this.dimensions.width, this.dimensions.height);
         if (this.facing === 'left') {
-            this.level.context.fillStyle = 'red';
-            this.level.context.fillRect(this.bounding.leftX, this.bounding.topY, this.dimensions.width / 2, this.dimensions.height);
+            this.level.layers.characters.context.fillStyle = 'red';
+            this.level.layers.characters.context.fillRect(this.bounding.leftX, this.bounding.topY, this.dimensions.width / 2, this.dimensions.height);
         }
         if (this.facing === 'right') {
-            this.level.context.fillStyle = 'blue';
-            this.level.context.fillRect(this.bounding.leftX + this.dimensions.width / 2, this.bounding.topY, this.dimensions.width / 2, this.dimensions.height);
+            this.level.layers.characters.context.fillStyle = 'blue';
+            this.level.layers.characters.context.fillRect(this.bounding.leftX + this.dimensions.width / 2, this.bounding.topY, this.dimensions.width / 2, this.dimensions.height);
         }
 
     }
