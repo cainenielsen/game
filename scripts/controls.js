@@ -104,7 +104,7 @@ const mouseHandler = (event, level, player) => {
     if (event.defaultPrevented) {
         return; // Do nothing if the event was already processed
     }
-    const currentMatrix = level.context.getTransform();
+    const currentMatrix = level.layers.characters.context.getTransform();
     const translatedX = currentMatrix.e;
     const translatedY = currentMatrix.f;
     const elementRelativeX = event.clientX - translatedX;

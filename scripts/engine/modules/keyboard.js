@@ -9,9 +9,9 @@ const keyboardModule = (level, player, handlers) => {
     level.keyPressHandler = handlers.keyPressHandler || defaultHandler;
 
     // setup keyboard event listeners
-    level.canvas.addEventListener("keydown", (e) => level.keyDownHandler(e, player), true);
-    level.canvas.addEventListener("keyup", (e) => level.keyUpHandler(e, player), true);
-    level.canvas.addEventListener("keypress", (e) => level.keyPressHandler(e, player), true);
+    level.container.addEventListener("keydown", (e) => level.keyDownHandler(e, player), true);
+    level.container.addEventListener("keyup", (e) => level.keyUpHandler(e, player), true);
+    level.container.addEventListener("keypress", (e) => level.keyPressHandler(e, player), true);
 };
 
 export default keyboardModule;
