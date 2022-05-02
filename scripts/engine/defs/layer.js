@@ -27,16 +27,19 @@ class Layer extends Index {
         // Get the DPR and size of the canvas
         const dpr = window.devicePixelRatio;
 
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight
+
         // Set the "actual" size of the canvas
-        this.canvas.width = window.innerWidth * dpr;
-        this.canvas.height = window.innerHeight * dpr;
+        this.canvas.width = windowWidth * dpr;
+        this.canvas.height = windowHeight * dpr;
 
         // Scale the context to ensure correct drawing operations
         this.context.scale(dpr, dpr);
 
         // Set the "drawn" size of the canvas
-        this.canvas.style.width = window.innerWidth + 'px';
-        this.canvas.style.height = window.innerHeight + 'px';
+        this.canvas.style.width = windowWidth + 'px';
+        this.canvas.style.height = windowHeight + 'px';
     }
     clear () {
         this.context.setTransform(1, 0, 0, 1, 0, 0);
