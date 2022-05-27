@@ -6,8 +6,13 @@ body {
   background-image: url("../assets/seamless-space-backgrounds/1024x1024/blue-nebula/4.png");
 }
 
-.layer {
+.level {
   background-image: url("../assets/seamless-space-backgrounds/1024x1024/blue-nebula/8.png");
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0px;
+  left: 0px;
 }
 
 nav {

@@ -17,10 +17,22 @@ export default class Tile extends Entity {
     constructor({ height, width, setPosition, texture = 'dirt' }, level) {
         super({ height, width, setPosition }, level);
         this.sprite = textures[texture];
+        this.drawn = false;
         this.gridDisplay();
     }
     draw() {
-        this.level.layers.characters.context.drawImage(this.sprite.img, this.bounding.leftX, this.bounding.topY, this.level.config.gridSize, this.level.config.gridSize);
+        if (this.drawn === false) {
+            console.log('draw');
+            this.drawn = true;
+            this.level.layers.tiles.context.drawImage(this.sprite.img, this.bounding.leftX, this.bounding.topY, this.level.config.gridSize, this.level.config.gridSize);
+        }
+    }
+    clear() {
+        if (this.drawn === true) {
+            console.log('clear');
+            this.drawn = false;
+            this.level.layers.tiles.context.clearRect(this.sprite.img, this.bounding.leftX, this.bounding.topY, this.level.config.gridSize, this.level.config.gridSize);
+        }
     }
     gridDisplay() {
         if (this.level.config.gridDisplay) {
